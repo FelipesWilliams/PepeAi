@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Camera Frame</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -15,12 +16,12 @@
 
         #frame-container {
             position: absolute;
-            width: 400px;
-            height: 300px;
-            left: calc(50% - 200px);
-            top: calc(50% - 150px);
-            min-width: 250px;  /* Tamaño mínimo para el contenedor */
-            min-height: 200px;
+            width: 350px;
+            height: 250px;
+            left: calc(50% - 175px);
+            top: calc(50% - 125px);
+            min-width: 350px;
+            min-height: 250px;
         }
 
         #frame {
@@ -30,6 +31,8 @@
             border: 3px solid red;
             cursor: move;
             background: transparent;
+            min-width: 350px;
+            min-height: 250px;
         }
 
         #controls {
@@ -43,18 +46,45 @@
         }
 
         .control-button {
-            background: white;
-            border: none;
-            padding: 5px 10px;
-            margin: 0 2px;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.3);
+            width: 20px;
+            height: 20px;
             border-radius: 3px;
-            min-width: 25px; /* Tamaño mínimo para los botones */
-            min-height: 25px;
-            font-size: 14px;
+            color: white;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(0, 0, 0, 0.4);
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.3);
+        }
+
+        #closeBtn {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(0, 0, 0, 0.4);
+        }
+
+        #closeBtn:hover {
+            background: rgba(255, 0, 0, 0.6);
+            border-color: rgba(0, 0, 0, 0.5);
+        }
+
+        #minimizeBtn {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(0, 0, 0, 0.35);
+        }
+
+        #minimizeBtn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(0, 0, 0, 0.45);
         }
 
         #resize-handle {
@@ -74,39 +104,161 @@
 
         #message-container {
             position: absolute;
-            left: calc(100% - 3px);
-            top: 0;
-            height: 100%;
+            left: 100%;
+            top: -3px;
+            height: calc(100% + 6px);
             display: flex;
             flex-direction: column;
-            min-width: 120px; /* Tamaño mínimo para el mensaje */
+            width: 220px;
+            min-width: 220px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 5px;
+            margin-left: 3px;
+            overflow: hidden;
         }
 
         #message-controls {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 5px;
-            border-radius: 5px 5px 0 0;
             display: flex;
-            justify-content: flex-end;
-            z-index: 1000;
-            min-height: 30px; /* Altura mínima para los controles */
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 6px;
+            width: 100%;
+            box-sizing: border-box;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 28px;
+        }
+
+        .mode-buttons-group {
+            display: flex;
+            gap: 3px;
+            flex-grow: 1;
+            min-width: 160px;
+            flex-shrink: 0;
+        }
+
+        .mode-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 3px 6px;
+            border-radius: 3px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.75em;
+            transition: all 0.3s ease;
+            position: relative;
+            flex: 1;
+            white-space: nowrap;
+            min-width: 45px;
+            flex-shrink: 0;
+        }
+
+        .mode-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .control-buttons-group {
+            display: flex;
+            gap: 3px;
+            margin-left: 3px;
+            min-width: 43px;
+            flex-shrink: 0;
         }
 
         #message-window {
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px;
-            font-family: Arial, sans-serif;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 8px;
+        }
+
+        #chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 8px;
+        }
+
+        #chat-input-container {
+            display: flex;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 4px;
+            align-items: center;
+            margin: 0 6px 6px 6px;
+        }
+
+        #chat-input {
+            flex: 1;
+            min-width: 0;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            height: 22px;
+        }
+
+        #loadButton {
+            min-width: unset;
+            width: 22px;
+            height: 22px;
+            padding: 0;
+            border-radius: 50%;
+            background: #ff4444;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            box-sizing: border-box;
-            pointer-events: none;
-            height: 100%;
-            width: 200px;
-            border-radius: 0 0 5px 5px;
-            min-height: 100px; /* Altura mínima para la ventana de mensaje */
+            border: none;
+            cursor: pointer;
+        }
+
+        #loadButton i {
+            font-size: 0.75em;
+            color: white;
+        }
+
+        #loadButton:hover {
+            background: #ff6666;
+            transform: scale(1.05);
+        }
+
+        #loadButton.loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        .loader {
+            display: none;
+        }
+
+        #loadButton.loading .loader {
+            display: block;
+        }
+
+        #loadButton.loading i {
+            display: none;
+        }
+
+        @keyframes pulse {
+            0% {
+                background: #2c2c2c;
+            }
+            50% {
+                background: #28a745;
+            }
+            100% {
+                background: #2c2c2c;
+            }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        .loading .loader {
+            opacity: 1;
+            animation: spin 1s linear infinite;
         }
 
         #minimized-icon {
@@ -130,6 +282,22 @@
         #frame-container.minimized {
             display: none;
         }
+
+        @media (max-width: 600px) {
+            #frame-container {
+                width: 350px;
+                min-width: 350px;
+            }
+
+            #message-container {
+                width: 220px;
+                min-width: 220px;
+            }
+            
+            .mode-button {
+                min-width: 45px;
+            }
+        }
     </style>
 </head>
 <body>       
@@ -139,10 +307,32 @@
             <div id="resize-handle" class="interactive-zone"></div>
             <div id="message-container">
                 <div id="message-controls" class="interactive-zone">
-                    <button class="control-button interactive-zone" id="minimizeBtn">−</button>
-                    <button class="control-button interactive-zone" id="closeBtn">✕</button>
+                    <div class="mode-buttons-group">
+                        <button class="mode-button interactive-zone" data-tooltip="Con esta opcion le enseñaras a la IA un proceso que quieres que se replique de la manera exacta">
+                            Captar
+                        </button>
+                        <button class="mode-button interactive-zone" data-tooltip="Con este modo se te irá brindando apoyo, mostrandote y diciendote como manejar lo que necesites">
+                            Apoyo
+                        </button>
+                        <button class="mode-button interactive-zone" data-tooltip="Modo para analizar, este proceso es más orientado para cámaras">
+                            Análisis
+                        </button>
+                    </div>
+                    <div class="control-buttons-group">
+                        <button class="control-button interactive-zone" id="minimizeBtn">−</button>
+                        <button class="control-button interactive-zone" id="closeBtn">✕</button>
+                    </div>
                 </div>
-                <div id="message-window">Hola mundo</div>
+                <div id="message-window">
+                    <div id="chat-history"></div>
+                    <div id="chat-input-container" class="interactive-zone">
+                        <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." class="interactive-zone">
+                        <button id="loadButton" class="interactive-zone">
+                            <span class="loader"></span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -231,26 +421,14 @@
             const dx = e.clientX - initialX;
             const dy = e.clientY - initialY;
             
-            // Establecer límites mínimos
-            const minWidth = 250;  // Ancho mínimo
-            const minHeight = 200; // Alto mínimo
-            
-            let newWidth = Math.max(minWidth, initialWidth + dx);
-            let newHeight = Math.max(minHeight, initialHeight + dy);
+            const newWidth = Math.max(350, initialWidth + dx);
+            const newHeight = Math.max(250, initialHeight + dy);
             
             const maxWidth = window.innerWidth - frameContainer.offsetLeft;
             const maxHeight = window.innerHeight - frameContainer.offsetTop;
             
-            newWidth = Math.min(newWidth, maxWidth);
-            newHeight = Math.min(newHeight, maxHeight);
-            
-            frameContainer.style.width = newWidth + 'px';
-            frameContainer.style.height = newHeight + 'px';
-
-            // Ajustar el ancho del mensaje proporcionalmente, pero mantener un mínimo
-            const messageWindow = document.getElementById('message-window');
-            const messageWidth = Math.max(120, newHeight * 0.4);
-            messageWindow.style.width = messageWidth + 'px';
+            frameContainer.style.width = Math.min(newWidth, maxWidth) + 'px';
+            frameContainer.style.height = Math.min(newHeight, maxHeight) + 'px';
         }
 
         frame.addEventListener('mousedown', dragStart);
@@ -300,6 +478,46 @@
             }
             if (rect.bottom > window.innerHeight) {
                 frameContainer.style.top = (window.innerHeight - rect.height) + 'px';
+            }
+        });
+
+        // Agregar la funcionalidad del botón de carga
+        const loadButton = document.getElementById('loadButton');
+        const chatInput = document.getElementById('chat-input');
+        const chatHistory = document.getElementById('chat-history');
+        let isLoading = false;
+
+        function addMessage(message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message';
+            messageElement.textContent = message;
+            chatHistory.appendChild(messageElement);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function handleSendMessage() {
+            if (!isLoading && chatInput.value.trim()) {
+                const message = chatInput.value.trim();
+                chatInput.value = '';
+                
+                addMessage(message);
+                
+                isLoading = true;
+                loadButton.classList.add('loading');
+                
+                // Simular una respuesta después de 2 segundos
+                setTimeout(() => {
+                    loadButton.classList.remove('loading');
+                    isLoading = false;
+                }, 2000);
+            }
+        }
+
+        loadButton.addEventListener('click', handleSendMessage);
+        
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                handleSendMessage();
             }
         });
     </script>
