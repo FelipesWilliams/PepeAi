@@ -893,6 +893,14 @@
             cursor: default !important;
             background-color: #007bff;
         }
+
+        /* Agregar estilo para notificaciones de error */
+        .notification.error {
+            background-color: #ff4444;
+        }
+        .notification {
+            z-index: 10000;
+        }
     </style>
 </head>
 <body>       
@@ -1463,13 +1471,116 @@
             });
         });
 
+        // Función para mostrar notificación
+        function showNotification(message, isError = false, type = 'default') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            
+            if (isError) {
+                notification.classList.add('error');
+            } else if (type === 'processing') {
+                notification.classList.add('processing');
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            if (type !== 'processing') {
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+            
+            return notification;
+        }
+
+        // Función para capturar la pantalla
+        async function captureScreen() {
+            try {
+                // Obtener las coordenadas del marco relativas a la ventana
+                const bounds = frame.getBoundingClientRect();
+                
+                // Obtener la posición de la ventana en la pantalla
+                const windowBounds = await ipcRenderer.invoke('get-window-bounds');
+                
+                // Calcular las coordenadas absolutas en la pantalla
+                const screenBounds = {
+                    x: Math.round(windowBounds.x + bounds.x),
+                    y: Math.round(windowBounds.y + bounds.y),
+                    width: Math.round(bounds.width),
+                    height: Math.round(bounds.height)
+                };
+
+                // Mostrar notificación de procesamiento
+                showNotification('Procesando captura...', false, 'processing');
+
+                const result = await ipcRenderer.invoke('capture-screen', screenBounds);
+                
+                if (result.success) {
+                    showNotification('Captura guardada en CapturasAuto');
+                    // Ocultar la instrucción permanentemente después de una captura exitosa
+                    const instruction = document.querySelector('.analysis-instruction');
+                    if (instruction) {
+                        instruction.style.display = 'none';
+                    }
+                } else {
+                    showNotification('Error al guardar la captura: ' + result.error, true);
+                    console.error('Error al capturar:', result.error);
+                }
+            } catch (error) {
+                showNotification('Error al realizar la captura', true);
+                console.error('Error al capturar la pantalla:', error);
+            }
+        }
+
         // Manejar el clic en el botón de ojo
-        analysisButton.addEventListener('click', function() {
+        analysisButton.addEventListener('click', async function() {
             const instruction = document.querySelector('.analysis-instruction');
             instruction.classList.add('hidden');
             this.classList.add('spinning', 'moved-up');
             frame.classList.add('analyzing');
+            
+            // Esperar un momento para que la UI se actualice antes de capturar
+            setTimeout(async () => {
+                await captureScreen();
+            }, 500);
         });
+
+        // Agregar estilos para las notificaciones
+        const style = document.createElement('style');
+        style.textContent = `
+            .notification {
+                z-index: 10000;
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 10px 20px;
+                border-radius: 5px;
+                background-color: #28a745;
+                color: white;
+                font-size: 14px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .notification.show {
+                opacity: 1;
+            }
+
+            .notification.error {
+                background-color: #dc3545;
+            }
+
+            .notification.processing {
+                background-color: #007bff;
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html> 
