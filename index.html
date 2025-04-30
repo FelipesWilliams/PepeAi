@@ -41,6 +41,11 @@
             cursor: default;
         }
 
+        #frame.analyzing {
+            border-color: #007bff;
+            cursor: default;
+        }
+
         #controls {
             position: absolute;
             top: -30px;
@@ -877,6 +882,17 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        /* Actualizar el estilo del cursor cuando está en modo análisis */
+        #frame.analyzing {
+            border-color: #007bff;
+            cursor: default !important;
+        }
+
+        #frame.analyzing #resize-handle {
+            cursor: default !important;
+            background-color: #007bff;
+        }
     </style>
 </head>
 <body>       
@@ -996,7 +1012,7 @@
         });
 
         function dragStart(e) {
-            if (isRecording) return; // Prevenir arrastre si está grabando
+            if (isRecording || frame.classList.contains('analyzing')) return; // Prevenir arrastre si está grabando o analizando
 
             if (e.target === resizeHandle) {
                 startResize(e);
@@ -1012,7 +1028,7 @@
         }
 
         function drag(e) {
-            if (isRecording) return; // Prevenir movimiento si está grabando
+            if (isRecording || frame.classList.contains('analyzing')) return; // Prevenir movimiento si está grabando o analizando
 
             if (isDragging) {
                 e.preventDefault();
@@ -1049,7 +1065,7 @@
         }
 
         function handleResize(e) {
-            if (isRecording) return; // Prevenir redimensionamiento si está grabando
+            if (isRecording || frame.classList.contains('analyzing')) return; // Prevenir redimensionamiento si está grabando o analizando
 
             const dx = e.clientX - initialX;
             const dy = e.clientY - initialY;
@@ -1432,6 +1448,7 @@
                 hideLearningList();
                 chatContent.style.display = 'none';
                 playButtonContainer.style.display = 'none';
+                frame.classList.remove('analyzing');
 
                 if (button === supportButton) {
                     showLearningList();
@@ -1451,6 +1468,7 @@
             const instruction = document.querySelector('.analysis-instruction');
             instruction.classList.add('hidden');
             this.classList.add('spinning', 'moved-up');
+            frame.classList.add('analyzing');
         });
     </script>
 </body>
