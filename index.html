@@ -19,6 +19,8 @@
             height: 300px;
             left: calc(50% - 200px);
             top: calc(50% - 150px);
+            min-width: 250px;  /* Tamaño mínimo para el contenedor */
+            min-height: 200px;
         }
 
         #frame {
@@ -47,6 +49,12 @@
             margin: 0 2px;
             cursor: pointer;
             border-radius: 3px;
+            min-width: 25px; /* Tamaño mínimo para los botones */
+            min-height: 25px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #resize-handle {
@@ -63,16 +71,79 @@
         .interactive-zone {
             -webkit-app-region: no-drag;
         }
+
+        #message-container {
+            position: absolute;
+            left: calc(100% - 3px);
+            top: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            min-width: 120px; /* Tamaño mínimo para el mensaje */
+        }
+
+        #message-controls {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px;
+            border-radius: 5px 5px 0 0;
+            display: flex;
+            justify-content: flex-end;
+            z-index: 1000;
+            min-height: 30px; /* Altura mínima para los controles */
+        }
+
+        #message-window {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-sizing: border-box;
+            pointer-events: none;
+            height: 100%;
+            width: 200px;
+            border-radius: 0 0 5px 5px;
+            min-height: 100px; /* Altura mínima para la ventana de mensaje */
+        }
+
+        #minimized-icon {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            right: 20px;
+            bottom: 20px;
+            cursor: pointer;
+            display: none;
+            z-index: 9999;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        #minimized-icon:hover {
+            transform: scale(1.1);
+        }
+
+        #frame-container.minimized {
+            display: none;
+        }
     </style>
 </head>
 <body>       
+    <img src="OIP.jpg" id="minimized-icon" class="interactive-zone" alt="Minimized Icon">
     <div id="frame-container">
         <div id="frame" class="interactive-zone">
-            <div id="controls" class="interactive-zone">
-                <button class="control-button interactive-zone" id="minimizeBtn">−</button>
-                <button class="control-button interactive-zone" id="closeBtn">✕</button>
-            </div>
             <div id="resize-handle" class="interactive-zone"></div>
+            <div id="message-container">
+                <div id="message-controls" class="interactive-zone">
+                    <button class="control-button interactive-zone" id="minimizeBtn">−</button>
+                    <button class="control-button interactive-zone" id="closeBtn">✕</button>
+                </div>
+                <div id="message-window">Hola mundo</div>
+            </div>
         </div>
     </div>
 
@@ -81,12 +152,15 @@
         const frameContainer = document.getElementById('frame-container');
         const frame = document.getElementById('frame');
         const resizeHandle = document.getElementById('resize-handle');
+        const minimizedIcon = document.getElementById('minimized-icon');
         let isDragging = false;
         let isResizing = false;
         let initialX;
         let initialY;
         let initialWidth;
         let initialHeight;
+        let isMinimized = false;
+        let previousSize = { width: 400, height: 300, left: 0, top: 0 };
 
         // Función para habilitar/deshabilitar eventos del mouse
         function setIgnoreMouseEvents(ignore) {
@@ -157,8 +231,12 @@
             const dx = e.clientX - initialX;
             const dy = e.clientY - initialY;
             
-            let newWidth = Math.max(100, initialWidth + dx);
-            let newHeight = Math.max(100, initialHeight + dy);
+            // Establecer límites mínimos
+            const minWidth = 250;  // Ancho mínimo
+            const minHeight = 200; // Alto mínimo
+            
+            let newWidth = Math.max(minWidth, initialWidth + dx);
+            let newHeight = Math.max(minHeight, initialHeight + dy);
             
             const maxWidth = window.innerWidth - frameContainer.offsetLeft;
             const maxHeight = window.innerHeight - frameContainer.offsetTop;
@@ -168,6 +246,11 @@
             
             frameContainer.style.width = newWidth + 'px';
             frameContainer.style.height = newHeight + 'px';
+
+            // Ajustar el ancho del mensaje proporcionalmente, pero mantener un mínimo
+            const messageWindow = document.getElementById('message-window');
+            const messageWidth = Math.max(120, newHeight * 0.4);
+            messageWindow.style.width = messageWidth + 'px';
         }
 
         frame.addEventListener('mousedown', dragStart);
@@ -178,9 +261,36 @@
             ipcRenderer.send('close-window');
         });
 
-        document.getElementById('minimizeBtn').addEventListener('click', () => {
-            ipcRenderer.send('minimize-window');
-        });
+        function toggleMinimized() {
+            if (!isMinimized) {
+                // Guardar el tamaño y posición actual
+                previousSize = {
+                    width: frameContainer.offsetWidth,
+                    height: frameContainer.offsetHeight,
+                    left: frameContainer.offsetLeft,
+                    top: frameContainer.offsetTop
+                };
+
+                // Mostrar icono y ocultar frame
+                frameContainer.classList.add('minimized');
+                minimizedIcon.style.display = 'block';
+                isMinimized = true;
+            } else {
+                // Restaurar al tamaño anterior
+                frameContainer.style.width = previousSize.width + 'px';
+                frameContainer.style.height = previousSize.height + 'px';
+                frameContainer.style.left = previousSize.left + 'px';
+                frameContainer.style.top = previousSize.top + 'px';
+                
+                // Ocultar icono y mostrar frame
+                frameContainer.classList.remove('minimized');
+                minimizedIcon.style.display = 'none';
+                isMinimized = false;
+            }
+        }
+
+        document.getElementById('minimizeBtn').addEventListener('click', toggleMinimized);
+        minimizedIcon.addEventListener('click', toggleMinimized);
 
         window.addEventListener('resize', () => {
             const rect = frameContainer.getBoundingClientRect();
