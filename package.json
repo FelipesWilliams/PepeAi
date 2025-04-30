@@ -1,0 +1,39 @@
+{
+  "name": "camera-frame-app",
+  "version": "1.0.0",
+  "description": "Desktop application with movable frame",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder build --win",
+    "dist": "electron-builder"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.cameraframe.app",
+    "productName": "Camera Frame",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "iconnn.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Camera Frame"
+    }
+  },
+  "dependencies": {
+    "windows-shortcuts": "^0.1.6"
+  }
+}

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Frame</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            -webkit-app-region: no-drag;
+        }
+
+        #frame-container {
+            position: absolute;
+            width: 400px;
+            height: 300px;
+            left: calc(50% - 200px);
+            top: calc(50% - 150px);
+        }
+
+        #frame {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border: 3px solid red;
+            cursor: move;
+            background: transparent;
+        }
+
+        #controls {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+
+        .control-button {
+            background: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 0 2px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        #resize-handle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            bottom: -5px;
+            right: -5px;
+            cursor: se-resize;
+        }
+
+        .interactive-zone {
+            -webkit-app-region: no-drag;
+        }
+    </style>
+</head>
+<body>
+    <div id="frame-container">
+        <div id="frame" class="interactive-zone">
+            <div id="controls" class="interactive-zone">
+                <button class="control-button interactive-zone" id="minimizeBtn">−</button>
+                <button class="control-button interactive-zone" id="closeBtn">✕</button>
+            </div>
+            <div id="resize-handle" class="interactive-zone"></div>
+        </div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+        const frameContainer = document.getElementById('frame-container');
+        const frame = document.getElementById('frame');
+        const resizeHandle = document.getElementById('resize-handle');
+        let isDragging = false;
+        let isResizing = false;
+        let initialX;
+        let initialY;
+        let initialWidth;
+        let initialHeight;
+
+        // Función para habilitar/deshabilitar eventos del mouse
+        function setIgnoreMouseEvents(ignore) {
+            ipcRenderer.send('set-ignore-mouse-events', ignore);
+        }
+
+        // Por defecto, ignorar eventos del mouse
+        setIgnoreMouseEvents(true);
+
+        // Habilitar eventos del mouse cuando el cursor está sobre elementos interactivos
+        document.querySelectorAll('.interactive-zone').forEach(element => {
+            element.addEventListener('mouseenter', () => setIgnoreMouseEvents(false));
+            element.addEventListener('mouseleave', () => {
+                if (!isDragging && !isResizing) {
+                    setIgnoreMouseEvents(true);
+                }
+            });
+        });
+
+        function dragStart(e) {
+            if (e.target === resizeHandle) {
+                startResize(e);
+                return;
+            }
+
+            if (e.target === frame || e.target.closest('#controls')) {
+                isDragging = true;
+                initialX = e.clientX - frameContainer.offsetLeft;
+                initialY = e.clientY - frameContainer.offsetTop;
+                setIgnoreMouseEvents(false);
+            }
+        }
+
+        function drag(e) {
+            if (isDragging) {
+                e.preventDefault();
+                
+                let newX = e.clientX - initialX;
+                let newY = e.clientY - initialY;
+                
+                newX = Math.max(0, Math.min(newX, window.innerWidth - frameContainer.offsetWidth));
+                newY = Math.max(0, Math.min(newY, window.innerHeight - frameContainer.offsetHeight));
+                
+                frameContainer.style.left = newX + 'px';
+                frameContainer.style.top = newY + 'px';
+            } else if (isResizing) {
+                e.preventDefault();
+                handleResize(e);
+            }
+        }
+
+        function dragEnd(e) {
+            isDragging = false;
+            isResizing = false;
+            setIgnoreMouseEvents(true);
+        }
+
+        function startResize(e) {
+            isResizing = true;
+            initialWidth = frameContainer.offsetWidth;
+            initialHeight = frameContainer.offsetHeight;
+            initialX = e.clientX;
+            initialY = e.clientY;
+            setIgnoreMouseEvents(false);
+        }
+
+        function handleResize(e) {
+            const dx = e.clientX - initialX;
+            const dy = e.clientY - initialY;
+            
+            let newWidth = Math.max(100, initialWidth + dx);
+            let newHeight = Math.max(100, initialHeight + dy);
+            
+            const maxWidth = window.innerWidth - frameContainer.offsetLeft;
+            const maxHeight = window.innerHeight - frameContainer.offsetTop;
+            
+            newWidth = Math.min(newWidth, maxWidth);
+            newHeight = Math.min(newHeight, maxHeight);
+            
+            frameContainer.style.width = newWidth + 'px';
+            frameContainer.style.height = newHeight + 'px';
+        }
+
+        frame.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+
+        document.getElementById('closeBtn').addEventListener('click', () => {
+            ipcRenderer.send('close-window');
+        });
+
+        document.getElementById('minimizeBtn').addEventListener('click', () => {
+            ipcRenderer.send('minimize-window');
+        });
+
+        window.addEventListener('resize', () => {
+            const rect = frameContainer.getBoundingClientRect();
+            
+            if (rect.right > window.innerWidth) {
+                frameContainer.style.left = (window.innerWidth - rect.width) + 'px';
+            }
+            if (rect.bottom > window.innerHeight) {
+                frameContainer.style.top = (window.innerHeight - rect.height) + 'px';
+            }
+        });
+    </script>
+</body>
+</html> 
