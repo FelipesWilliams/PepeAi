@@ -28,11 +28,17 @@
             position: relative;
             width: 100%;
             height: 100%;
-            border: 3px solid red;
+            border: 3px solid #ff4444;
             cursor: move;
             background: transparent;
             min-width: 350px;
             min-height: 250px;
+            transition: all 0.3s ease;
+        }
+
+        #frame.recording {
+            border-color: #28a745;
+            cursor: default;
         }
 
         #controls {
@@ -91,11 +97,18 @@
             position: absolute;
             width: 10px;
             height: 10px;
-            background-color: red;
+            background-color: #ff4444;
             border-radius: 50%;
             bottom: -5px;
             right: -5px;
             cursor: se-resize;
+            transition: all 0.3s ease;
+        }
+
+        #frame.recording #resize-handle {
+            background-color: #28a745;
+            cursor: default;
+            opacity: 0.5;
         }
 
         .interactive-zone {
@@ -231,6 +244,109 @@
             overflow: hidden;
         }
 
+        /* Estilos para el botón de play */
+        #play-button-container {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        #timer {
+            color: #28a745;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: monospace;
+            display: none;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        #timer.stopped {
+            color: #ffc107;
+            animation: blink 1s;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        #play-button {
+            width: 100px;
+            height: 100px;
+            background-color: #ff4444;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #play-button.recording {
+            background-color: #28a745;
+            animation: pulse 2s infinite;
+        }
+
+        #play-button.saving {
+            background-color: #007bff;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #play-button i {
+            color: white;
+            font-size: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .recording-message {
+            color: #28a745;
+            text-align: center;
+            font-size: 14px;
+            max-width: 250px;
+            line-height: 1.4;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .play-instruction {
+            color: white;
+            text-align: center;
+            font-size: 14px;
+            max-width: 250px;
+            line-height: 1.4;
+            opacity: 0.9;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .play-instruction-bottom {
+            color: #ff4444;
+            text-align: center;
+            font-size: 14px;
+            max-width: 250px;
+            line-height: 1.4;
+            margin-top: 20px;
+        }
+
         .chat-title {
             color: white;
             text-align: center;
@@ -362,18 +478,6 @@
             display: none;
         }
 
-        @keyframes pulse {
-            0% {
-                background: #2c2c2c;
-            }
-            50% {
-                background: #28a745;
-            }
-            100% {
-                background: #2c2c2c;
-            }
-        }
-
         .loading {
             animation: pulse 1.5s infinite;
         }
@@ -424,6 +528,268 @@
         #message-container {
             overflow: visible;
         }
+
+        .notification {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 68, 68, 0.95);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            max-width: 80%;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+            line-height: 1.4;
+        }
+
+        .notification.show {
+            opacity: 1;
+            animation: fadeInOut 7s ease forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            5% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            85% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        .countdown-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .countdown {
+            color: white;
+            font-size: 80px;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            opacity: 0;
+            display: none;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+        }
+
+        .countdown.show {
+            display: block;
+            animation: countdownPulse 1s ease-in-out;
+        }
+
+        .notification {
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            max-width: 300px;
+            text-align: center;
+            opacity: 0;
+            display: none;
+            line-height: 1.4;
+            background-color: rgba(255, 68, 68, 0.95);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-top: 20px;
+        }
+
+        .notification.show {
+            display: block;
+            opacity: 1;
+            animation: fadeInOut 7s ease forwards;
+        }
+
+        @keyframes countdownPulse {
+            0% { opacity: 0; transform: scale(1.5); }
+            20% { opacity: 1; transform: scale(1); }
+            80% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(20px); }
+            10% { opacity: 1; transform: translateY(0); }
+            80% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .sample-name-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            display: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+            min-width: 300px;
+            pointer-events: auto;
+        }
+
+        .sample-name-modal.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            display: block;
+        }
+
+        .sample-name-modal h3 {
+            color: white;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .sample-name-modal input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+            font-size: 14px;
+            box-sizing: border-box;
+            pointer-events: auto;
+        }
+
+        .sample-name-modal .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .sample-name-modal button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .sample-name-modal .save-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        .sample-name-modal .save-btn:hover {
+            background: #0056b3;
+        }
+
+        .sample-name-modal .cancel-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .sample-name-modal .cancel-btn:hover {
+            background: #5a6268;
+        }
+
+        .learning-list {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+        }
+
+        .learning-list h3 {
+            color: white;
+            text-align: center;
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+        }
+
+        .learning-items {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .learning-item {
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 8px;
+            padding: 12px 15px;
+            border-radius: 5px;
+            color: white;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .learning-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .learning-item .name {
+            font-size: 14px;
+            flex-grow: 1;
+        }
+
+        .learning-item .time {
+            color: #28a745;
+            font-size: 14px;
+            font-family: monospace;
+            margin-left: 15px;
+            padding-left: 15px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .learning-items::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .learning-items::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        .learning-items::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        .learning-items::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Agregar un overlay para el fondo */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .modal-overlay.show {
+            display: block;
+        }
     </style>
 </head>
 <body>       
@@ -431,10 +797,14 @@
     <div id="frame-container">
         <div id="frame" class="interactive-zone">
             <div id="resize-handle" class="interactive-zone"></div>
+            <div class="countdown-container">
+                <div class="countdown">5</div>
+                
+            </div>
             <div id="message-container">
                 <div id="message-controls" class="interactive-zone">
                     <div class="mode-buttons-group">
-                        <button class="mode-button interactive-zone" data-tooltip="Con este modo lograras entrenar a la ia para que ayude a replicar el mismo proceso enseñandole o dandole indicaciones a otro usuario">
+                        <button class="mode-button interactive-zone" id="capture-button" data-tooltip="Con este modo lograras entrenar a la ia para que ayude a replicar el mismo proceso enseñandole o dandole indicaciones a otro usuario">
                             Captar
                         </button>
                         <button class="mode-button interactive-zone" data-tooltip="Con este modo la AI te ayudara a cumplir el proceso que le mostraron para enseñarte">
@@ -450,17 +820,47 @@
                     </div>
                 </div>
                 <div id="message-window">
-                    <div class="chat-title">Chateo AI</div>
-                    <div id="chat-history"></div>
-                    <div id="chat-input-container" class="interactive-zone">
-                        <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." class="interactive-zone">
-                        <button id="loadButton" class="interactive-zone">
-                            <span class="loader"></span>
-                            <i class="fas fa-paper-plane"></i>
+                    <div id="chat-content">
+                        <div class="chat-title">Chateo AI</div>
+                        <div id="chat-history"></div>
+                        <div id="chat-input-container" class="interactive-zone">
+                            <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." class="interactive-zone">
+                            <button id="loadButton" class="interactive-zone">
+                                <span class="loader"></span>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="learning-list">
+                        <h3>Aprendizaje Adquirido</h3>
+                        <div class="learning-items">
+                            <!-- Los items se agregarán dinámicamente -->
+                        </div>
+                    </div>
+                    <div id="play-button-container">
+                        <div class="play-instruction">
+                            Posiciona bien el marco rojo para poder entrenar IA
+                        </div>
+                        <button id="play-button" class="interactive-zone">
+                            <i class="fas fa-play"></i>
                         </button>
+                        <div id="timer">00:00</div>
+                        <div class="play-instruction-bottom">
+                            Presiona play para comenzar a enseñar.
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay"></div>
+    <div class="sample-name-modal">
+        <h3>Nombre de la muestra</h3>
+        <input type="text" id="sample-name" placeholder="Nombre del aprendizaje" class="interactive-zone">
+        <div class="buttons">
+            <button class="save-btn interactive-zone">Guardar</button>
+            <button class="cancel-btn interactive-zone">Borrar</button>
         </div>
     </div>
 
@@ -478,6 +878,7 @@
         let initialHeight;
         let isMinimized = false;
         let previousSize = { width: 400, height: 300, left: 0, top: 0 };
+        let isRecording = false;
 
         // Función para habilitar/deshabilitar eventos del mouse
         function setIgnoreMouseEvents(ignore) {
@@ -498,6 +899,8 @@
         });
 
         function dragStart(e) {
+            if (isRecording) return; // Prevenir arrastre si está grabando
+
             if (e.target === resizeHandle) {
                 startResize(e);
                 return;
@@ -512,6 +915,8 @@
         }
 
         function drag(e) {
+            if (isRecording) return; // Prevenir movimiento si está grabando
+
             if (isDragging) {
                 e.preventDefault();
                 
@@ -536,6 +941,8 @@
         }
 
         function startResize(e) {
+            if (isRecording) return; // Prevenir redimensionamiento si está grabando
+
             isResizing = true;
             initialWidth = frameContainer.offsetWidth;
             initialHeight = frameContainer.offsetHeight;
@@ -545,6 +952,8 @@
         }
 
         function handleResize(e) {
+            if (isRecording) return; // Prevenir redimensionamiento si está grabando
+
             const dx = e.clientX - initialX;
             const dy = e.clientY - initialY;
             
@@ -650,13 +1059,273 @@
 
         // Agregar manejo de estados activos para los botones de modo
         const modeButtons = document.querySelectorAll('.mode-button');
+        const chatContent = document.getElementById('chat-content');
+        const playButtonContainer = document.getElementById('play-button-container');
+        const captureButton = document.getElementById('capture-button');
         
         modeButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // Remover la clase active de todos los botones
                 modeButtons.forEach(btn => btn.classList.remove('active'));
-                // Agregar la clase active al botón clickeado
                 button.classList.add('active');
+
+                if (button === captureButton) {
+                    chatContent.style.display = 'none';
+                    playButtonContainer.style.display = 'flex';
+                } else {
+                    chatContent.style.display = 'flex';
+                    playButtonContainer.style.display = 'none';
+                }
+            });
+        });
+
+        // Agregar la funcionalidad del botón play y timer
+        const playButton = document.getElementById('play-button');
+        const playIcon = playButton.querySelector('i');
+        const notification = document.querySelector('.notification');
+        const timer = document.getElementById('timer');
+        const playInstruction = document.querySelector('.play-instruction');
+        const playInstructionBottom = document.querySelector('.play-instruction-bottom');
+        let notificationTimeout;
+        let timerInterval;
+        let seconds = 0;
+        let minutes = 0;
+
+        function updateTimer() {
+            seconds++;
+            if (seconds === 60) {
+                minutes++;
+                seconds = 0;
+            }
+            timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            seconds = 0;
+            minutes = 0;
+            timer.textContent = '00:00';
+        }
+
+        const countdown = document.querySelector('.countdown');
+        
+        function startCountdown() {
+            let count = 5;
+            const countdownElement = document.querySelector('.countdown');
+            countdownElement.textContent = count;
+            
+            return new Promise((resolve) => {
+                const countInterval = setInterval(() => {
+                    count--;
+                    if (count > 0) {
+                        countdownElement.textContent = count;
+                        countdownElement.classList.remove('show');
+                        void countdownElement.offsetWidth; // Reinicia la animación
+                        countdownElement.classList.add('show');
+                    } else {
+                        clearInterval(countInterval);
+                        countdownElement.style.display = 'none';
+                        resolve();
+                    }
+                }, 1000);
+                
+                countdownElement.style.display = 'block';
+                countdownElement.classList.add('show');
+            });
+        }
+
+        const sampleNameModal = document.querySelector('.sample-name-modal');
+        const sampleNameInput = document.getElementById('sample-name');
+        const saveBtn = document.querySelector('.save-btn');
+        const cancelBtn = document.querySelector('.cancel-btn');
+        const modalOverlay = document.querySelector('.modal-overlay');
+
+        function showSampleNameModal() {
+            modalOverlay.classList.add('show');
+            sampleNameModal.style.display = 'block';
+            sampleNameModal.classList.add('show');
+            sampleNameInput.focus();
+            setIgnoreMouseEvents(false);
+        }
+
+        function hideSampleNameModal() {
+            modalOverlay.classList.remove('show');
+            sampleNameModal.classList.remove('show');
+            sampleNameModal.style.display = 'none';
+            sampleNameInput.value = '';
+            if (!isDragging && !isResizing) {
+                setIgnoreMouseEvents(true);
+            }
+        }
+
+        // Asegurarse de que el modal y sus elementos sean interactivos
+        sampleNameModal.addEventListener('mouseenter', () => {
+            setIgnoreMouseEvents(false);
+        });
+
+        sampleNameModal.addEventListener('mouseleave', () => {
+            if (!isDragging && !isResizing) {
+                setIgnoreMouseEvents(true);
+            }
+        });
+
+        // Manejar el clic en el overlay
+        modalOverlay.addEventListener('click', () => {
+            hideSampleNameModal();
+        });
+
+        // Prevenir que los clics dentro del modal cierren el modal
+        sampleNameModal.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        playButton.addEventListener('click', async () => {
+            if (!isRecording) {
+                // Iniciar secuencia de grabación
+                playButton.disabled = true;
+                
+                // Ocultar instrucciones
+                playInstruction.style.display = 'none';
+                playInstructionBottom.style.display = 'none';
+                
+                // Iniciar cuenta regresiva
+                await startCountdown();
+                
+                // Activar grabación
+                isRecording = true;
+                playButton.disabled = false;
+                playButton.classList.add('recording');
+                frame.classList.add('recording');
+                playIcon.classList.remove('fa-play');
+                playIcon.classList.add('fa-pause');
+                
+                // Mostrar timer y comenzar conteo
+                timer.style.display = 'block';
+                timer.classList.remove('stopped');
+                resetTimer();
+                timerInterval = setInterval(updateTimer, 1000);
+                
+                // Mostrar notificación
+                notification.classList.add('show');
+            } else {
+                // Detener el contador
+                clearInterval(timerInterval);
+                timer.classList.add('stopped');
+                
+                // Cambiar a estado de guardado (azul girando)
+                playButton.classList.remove('recording');
+                playButton.classList.add('saving');
+                
+                // Esperar 3 segundos
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                // Mostrar modal para nombre de muestra
+                showSampleNameModal();
+            }
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            hideSampleNameModal();
+            // Restaurar todo al estado inicial
+            isRecording = false;
+            playButton.classList.remove('recording', 'saving');
+            frame.classList.remove('recording');
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+            playInstruction.style.display = 'block';
+            playInstructionBottom.style.display = 'block';
+            timer.style.display = 'none';
+            timer.classList.remove('stopped');
+            resetTimer();
+            frame.style.borderColor = '#ff4444';
+        });
+
+        saveBtn.addEventListener('click', () => {
+            const sampleName = sampleNameInput.value.trim();
+            if (sampleName) {
+                // Guardar en la lista de aprendizajes
+                learningsList.push({
+                    name: sampleName,
+                    time: timer.textContent
+                });
+
+                // Actualizar la lista inmediatamente
+                updateLearningList();
+                
+                // Cerrar el modal
+                hideSampleNameModal();
+                
+                // Restaurar estado inicial
+                isRecording = false;
+                playButton.classList.remove('recording', 'saving');
+                frame.classList.remove('recording');
+                playIcon.classList.remove('fa-pause');
+                playIcon.classList.add('fa-play');
+                playInstruction.style.display = 'block';
+                playInstructionBottom.style.display = 'block';
+                timer.style.display = 'none';
+                timer.classList.remove('stopped');
+                resetTimer();
+                frame.style.borderColor = '#ff4444';
+            }
+        });
+
+        // Manejar la tecla Enter en el input
+        sampleNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveBtn.click();
+            }
+        });
+
+        // Lista para almacenar los aprendizajes
+        let learningsList = [];
+        const learningListContainer = document.querySelector('.learning-list');
+        const learningItems = document.querySelector('.learning-items');
+        const supportButton = document.querySelector('.mode-button:nth-child(2)'); // Botón "Apoyo"
+
+        function showLearningList() {
+            chatContent.style.display = 'none';
+            learningListContainer.style.display = 'flex';
+            updateLearningList();
+        }
+
+        function hideLearningList() {
+            learningListContainer.style.display = 'none';
+            chatContent.style.display = 'flex';
+        }
+
+        function updateLearningList() {
+            learningItems.innerHTML = '';
+            learningsList.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'learning-item';
+                itemElement.innerHTML = `
+                    <span class="name">${item.name}</span>
+                    <span class="time">${item.time}</span>
+                `;
+                learningItems.appendChild(itemElement);
+            });
+        }
+
+        // Modificar el evento click de los botones de modo
+        modeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                modeButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                if (button === supportButton) {
+                    showLearningList();
+                    updateLearningList();
+                } else {
+                    hideLearningList();
+                }
+
+                if (button.id === 'capture-button') {
+                    chatContent.style.display = 'none';
+                    playButtonContainer.style.display = 'flex';
+                } else if (button !== supportButton) {
+                    chatContent.style.display = 'flex';
+                    playButtonContainer.style.display = 'none';
+                }
             });
         });
     </script>
