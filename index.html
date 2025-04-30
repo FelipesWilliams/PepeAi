@@ -790,6 +790,93 @@
         .modal-overlay.show {
             display: block;
         }
+
+        .analysis-window {
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+        }
+
+        .analysis-window h3 {
+            color: white;
+            text-align: center;
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+        }
+
+        .analysis-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            color: white;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .analysis-instruction {
+            color: #ff4444;
+            text-align: center;
+            font-size: 14px;
+            margin: 15px 0;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .analysis-instruction.hidden {
+            opacity: 0;
+            height: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #analysis-button {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            position: relative;
+        }
+
+        #analysis-button.moved-up {
+            margin: 5px auto 20px;
+            transform: translateY(-10px);
+        }
+
+        #analysis-button i {
+            color: white;
+            font-size: 24px;
+        }
+
+        #analysis-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        #analysis-button.moved-up:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        #analysis-button.spinning i {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>       
@@ -835,6 +922,16 @@
                         <h3>Aprendizaje Adquirido</h3>
                         <div class="learning-items">
                             <!-- Los items se agregarán dinámicamente -->
+                        </div>
+                    </div>
+                    <div class="analysis-window" style="display: none;">
+                        <h3>Comentaré lo que voy procesando</h3>
+                        <p class="analysis-instruction">Ajusta el marco para poder ver y comentarte que analizo</p>
+                        <button id="analysis-button" class="interactive-zone">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <div class="analysis-content">
+                            <!-- El contenido del análisis se agregará aquí -->
                         </div>
                     </div>
                     <div id="play-button-container">
@@ -1306,27 +1403,54 @@
             });
         }
 
+        const analysisWindow = document.querySelector('.analysis-window');
+        const analysisButton = document.querySelector('#analysis-button');
+        const analysisModeButton = document.querySelector('.mode-button:nth-child(3)'); // Botón "Análisis"
+
+        function showAnalysisWindow() {
+            chatContent.style.display = 'none';
+            learningListContainer.style.display = 'none';
+            playButtonContainer.style.display = 'none';
+            analysisWindow.style.display = 'flex';
+        }
+
+        function hideAnalysisWindow() {
+            analysisWindow.style.display = 'none';
+            // Detener la animación del botón y resetear posición
+            analysisButton.classList.remove('spinning', 'moved-up');
+            document.querySelector('.analysis-instruction').classList.remove('hidden');
+        }
+
         // Modificar el evento click de los botones de modo
         modeButtons.forEach(button => {
             button.addEventListener('click', () => {
                 modeButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
 
+                // Ocultar todas las ventanas primero
+                hideAnalysisWindow();
+                hideLearningList();
+                chatContent.style.display = 'none';
+                playButtonContainer.style.display = 'none';
+
                 if (button === supportButton) {
                     showLearningList();
                     updateLearningList();
-                } else {
-                    hideLearningList();
-                }
-
-                if (button.id === 'capture-button') {
-                    chatContent.style.display = 'none';
+                } else if (button === analysisModeButton) {
+                    showAnalysisWindow();
+                } else if (button.id === 'capture-button') {
                     playButtonContainer.style.display = 'flex';
-                } else if (button !== supportButton) {
+                } else {
                     chatContent.style.display = 'flex';
-                    playButtonContainer.style.display = 'none';
                 }
             });
+        });
+
+        // Manejar el clic en el botón de ojo
+        analysisButton.addEventListener('click', function() {
+            const instruction = document.querySelector('.analysis-instruction');
+            instruction.classList.add('hidden');
+            this.classList.add('spinning', 'moved-up');
         });
     </script>
 </body>
