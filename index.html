@@ -902,6 +902,43 @@
         .notification {
             z-index: 10000;
         }
+
+        .image-description {
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin: 10px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            font-size: 14px;
+            line-height: 1.4;
+            transition: all 0.3s ease;
+        }
+
+        .image-description.loading {
+            background: rgba(0, 123, 255, 0.2);
+        }
+
+        .image-description.error {
+            background: rgba(255, 68, 68, 0.2);
+        }
+
+        .image-description.success {
+            background: rgba(40, 167, 69, 0.2);
+        }
+
+        /* Animación de vibración para la traducción */
+        @keyframes translateVibration {
+            0% { transform: translateX(-2px); }
+            25% { transform: translateX(2px); }
+            50% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+            100% { transform: translateX(0); }
+        }
+
+        .image-description.translating {
+            animation: translateVibration 0.5s ease;
+        }
     </style>
 </head>
 <body>       
@@ -916,13 +953,13 @@
             <div id="message-container">
                 <div id="message-controls" class="interactive-zone">
                     <div class="mode-buttons-group">
-                        <button class="mode-button interactive-zone" id="capture-button" data-tooltip="Con este modo lograras entrenar a la ia para que ayude a replicar el mismo proceso enseñandole o dandole indicaciones a otro usuario">
+                        <button class="mode-button interactive-zone" id="capture-button" data-tooltip="Con este modo lograrás entrenar a la IA para que ayude a replicar el mismo proceso enseñándole o dándole indicaciones a otro usuario">
                             Captar
                         </button>
-                        <button class="mode-button interactive-zone" data-tooltip="Con este modo la AI te ayudara a cumplir el proceso que le mostraron para enseñarte">
+                        <button class="mode-button interactive-zone" data-tooltip="Con este modo la IA te ayudará a cumplir el proceso que le mostraron para enseñarte">
                             Apoyo
                         </button>
-                        <button class="mode-button interactive-zone" data-tooltip="Con este modo la IA enviara todo lo que alcanse analizar, ideal para camaras">
+                        <button class="mode-button interactive-zone" data-tooltip="Con este modo la IA enviará todo lo que alcance analizar, ideal para cámaras">
                             Análisis
                         </button>
                     </div>
@@ -933,7 +970,7 @@
                 </div>
                 <div id="message-window">
                     <div id="chat-content">
-                        <div class="chat-title">Chateo AI</div>
+                        <div class="chat-title">Chat con IA</div>
                         <div id="chat-history"></div>
                         <div id="chat-input-container" class="interactive-zone">
                             <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." class="interactive-zone">
@@ -946,29 +983,32 @@
                     <div class="learning-list">
                         <h3>Aprendizaje Adquirido</h3>
                         <div class="learning-items">
-                            <!-- Los items se agregarán dinámicamente -->
+                            <!-- Los elementos se agregarán dinámicamente -->
                         </div>
                     </div>
                     <div class="analysis-window" style="display: none;">
                         <h3>Comentaré lo que voy procesando</h3>
-                        <p class="analysis-instruction">Ajusta el marco para poder ver y comentarte que analizo</p>
+                        <p class="analysis-instruction">Ajusta el marco para poder ver y comentarte qué analizo</p>
                         <button id="analysis-button" class="interactive-zone">
                             <i class="fas fa-eye"></i>
                         </button>
+                        <div id="image-description" class="image-description">
+                            Esperando para analizar...
+                        </div>
                         <div class="analysis-content">
                             <!-- El contenido del análisis se agregará aquí -->
                         </div>
                     </div>
                     <div id="play-button-container">
                         <div class="play-instruction">
-                            Posiciona bien el marco rojo para poder entrenar IA
+                            Posiciona bien el marco rojo para poder entrenar la IA
                         </div>
                         <button id="play-button" class="interactive-zone">
                             <i class="fas fa-play"></i>
                         </button>
                         <div id="timer">00:00</div>
                         <div class="play-instruction-bottom">
-                            Presiona play para comenzar a enseñar.
+                            Presiona play para comenzar a enseñar
                         </div>
                     </div>
                 </div>
@@ -982,7 +1022,7 @@
         <input type="text" id="sample-name" placeholder="Nombre del aprendizaje" class="interactive-zone">
         <div class="buttons">
             <button class="save-btn interactive-zone">Guardar</button>
-            <button class="cancel-btn interactive-zone">Borrar</button>
+            <button class="cancel-btn interactive-zone">Cancelar</button>
         </div>
     </div>
 
@@ -1595,6 +1635,52 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Manejar actualizaciones del análisis de imágenes
+        const imageDescription = document.getElementById('image-description');
+
+        ipcRenderer.on('image-analysis-update', (event, data) => {
+            imageDescription.classList.remove('loading', 'error', 'success', 'translating');
+            
+            if (data.status === 'translating') {
+                imageDescription.classList.add('translating');
+                setTimeout(() => {
+                    imageDescription.classList.remove('translating');
+                    imageDescription.classList.add('success');
+                }, 500);
+                
+                // Detener la animación del botón de análisis
+                analysisButton.classList.remove('spinning');
+                frame.classList.remove('analyzing');
+            } else {
+                imageDescription.classList.add(data.status);
+            }
+            
+            let message = data.message;
+            switch (data.status) {
+                case 'loading':
+                    message = message || 'Procesando...';
+                    break;
+                case 'error':
+                    message = message || 'Error al procesar la imagen';
+                    // Detener la animación del botón en caso de error
+                    analysisButton.classList.remove('spinning');
+                    frame.classList.remove('analyzing');
+                    break;
+                case 'success':
+                    message = message || 'Análisis completado';
+                    break;
+            }
+            
+            imageDescription.textContent = message;
+            
+            if (data.status === 'error') {
+                setTimeout(() => {
+                    imageDescription.classList.remove('error');
+                    imageDescription.textContent = 'Esperando para analizar...';
+                }, 5000);
+            }
+        });
     </script>
 </body>
 </html> 

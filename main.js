@@ -2,6 +2,9 @@ const { app, BrowserWindow, Tray, screen, ipcMain, desktopCapturer } = require('
 const path = require('path');
 const fs = require('fs');
 
+// Importar el módulo de integración con Hugging Face
+const { initializeWatcher } = require('./huggingface-integration');
+
 let mainWindow;
 let tray = null;
 
@@ -44,6 +47,9 @@ function createWindow() {
   mainWindow.setAlwaysOnTop(true, 'screen-saver');
   mainWindow.maximize();
   mainWindow.loadFile('index.html');
+
+  // Inicializar el observador de Hugging Face
+  initializeWatcher(mainWindow);
 
   // Crear el tray icon
   createTray();
@@ -169,6 +175,9 @@ ipcMain.handle('capture-screen', async (event, frameBounds) => {
       dimensiones: dimensions,
       area: captureArea
     });
+
+    // El análisis de la imagen se realizará automáticamente por el observador
+    // en huggingface-integration.js
 
     return {
       success: true,

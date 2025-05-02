@@ -34,6 +34,11 @@
     }
   },
   "dependencies": {
+    "@huggingface/inference": "^3.11.0",
+    "@vitalets/google-translate-api": "^9.2.1",
+    "chokidar": "^4.0.3",
+    "form-data": "^4.0.2",
+    "node-fetch": "^2.7.0",
     "windows-shortcuts": "^0.1.6"
   }
 }
