@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Tray, screen, ipcMain, desktopCapturer } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 // Importar el módulo de integración con Hugging Face
 const { initializeWatcher } = require('./huggingface-integration');
@@ -82,6 +83,24 @@ function createWindow() {
         tray = null;
       }
     }
+  });
+
+  // Escuchar eventos para abrir enlaces en Edge
+  ipcMain.on('open-in-edge', (event, url) => {
+    // En Windows, usamos el comando correcto para abrir Edge
+    const command = `start msedge "${url}"`;
+    
+    exec(command, (error) => {
+      if (error) {
+        console.error('Error al abrir Microsoft Edge:', error);
+        // Intentar método alternativo si el primero falla
+        exec(`explorer.exe "${url}"`, (err) => {
+          if (err) {
+            console.error('Error al abrir URL con método alternativo:', err);
+          }
+        });
+      }
+    });
   });
 }
 

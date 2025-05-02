@@ -364,6 +364,57 @@
             flex-shrink: 0;
         }
 
+        .nutrir-section {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .nutrir-title {
+            color: white;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .ai-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .ai-button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            display: inline-block;
+            min-width: 80px;
+        }
+
+        .ai-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .ai-button:active {
+            background: rgba(40, 167, 69, 0.8) !important;
+            transform: translateY(1px);
+            transition: background-color 0.1s ease;
+        }
+
+        .ai-button.clicked {
+            background: rgba(40, 167, 69, 0.8);
+        }
+
         #chat-history {
             flex-grow: 1;
             overflow-y: auto;
@@ -971,6 +1022,13 @@
                 <div id="message-window">
                     <div id="chat-content">
                         <div class="chat-title">Chat con IA</div>
+                        <div class="nutrir-section">
+                            <div class="nutrir-title">Nutrir IA</div>
+                            <div class="ai-buttons">
+                                <button class="ai-button" onclick="handleAIButtonClick(this, 'https://claude.ai/new')">Claude</button>
+                                <button class="ai-button" onclick="handleAIButtonClick(this, 'https://chatgpt.com/')">Chat GPT</button>
+                            </div>
+                        </div>
                         <div id="chat-history"></div>
                         <div id="chat-input-container" class="interactive-zone">
                             <input type="text" id="chat-input" placeholder="Escribe tu mensaje..." class="interactive-zone">
@@ -1680,6 +1738,57 @@
                     imageDescription.textContent = 'Esperando para analizar...';
                 }, 5000);
             }
+        });
+
+        // Asegurar que los botones de IA sean siempre interactivos
+        document.querySelectorAll('.ai-button').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                setIgnoreMouseEvents(false);
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                if (!isDragging && !isResizing) {
+                    setIgnoreMouseEvents(true);
+                }
+            });
+        });
+
+        // Función para manejar el clic en los botones de IA
+        function handleAIButtonClick(button, url) {
+            // Asegurar que los eventos del mouse estén habilitados
+            setIgnoreMouseEvents(false);
+            
+            // Añadir clase para efecto visual
+            button.classList.add('clicked');
+            
+            // Enviar evento para abrir en Edge
+            ipcRenderer.send('open-in-edge', url);
+            
+            // Remover la clase después de un momento
+            setTimeout(() => {
+                button.classList.remove('clicked');
+            }, 300);
+        }
+
+        // Asegurar que la sección de botones sea interactiva desde el inicio
+        document.querySelector('.nutrir-section').addEventListener('mouseenter', () => {
+            setIgnoreMouseEvents(false);
+        });
+
+        document.querySelector('.nutrir-section').addEventListener('mouseleave', () => {
+            if (!isDragging && !isResizing) {
+                setIgnoreMouseEvents(true);
+            }
+        });
+
+        // Inicializar la interactividad al cargar la página
+        window.addEventListener('load', () => {
+            setIgnoreMouseEvents(false);
+            setTimeout(() => {
+                if (!isDragging && !isResizing) {
+                    setIgnoreMouseEvents(true);
+                }
+            }, 1000);
         });
     </script>
 </body>
