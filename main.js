@@ -26,18 +26,24 @@ function createTray() {
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: screen.getPrimaryDisplay().workAreaSize.width,
+    height: screen.getPrimaryDisplay().workAreaSize.height,
     frame: false,
     transparent: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
-    }
+    },
+    hasShadow: false,
+    enableLargerThanScreen: true,
+    movable: false,
+    resizable: false
   });
 
-  mainWindow.loadFile('index.html');
+  mainWindow.setIgnoreMouseEvents(true, { forward: true });
   mainWindow.setAlwaysOnTop(true, 'screen-saver');
+  mainWindow.maximize();
+  mainWindow.loadFile('index.html');
 
   // Crear el tray icon
   createTray();

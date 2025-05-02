@@ -15,7 +15,7 @@
         }
 
         #frame-container {
-            position: absolute;
+            position: fixed;
             width: 350px;
             height: 250px;
             left: calc(50% - 175px);
@@ -34,6 +34,7 @@
             min-width: 350px;
             min-height: 250px;
             transition: all 0.3s ease;
+            -webkit-app-region: no-drag;
         }
 
         #frame.recording {
@@ -1044,9 +1045,7 @@
                 let newX = e.clientX - initialX;
                 let newY = e.clientY - initialY;
                 
-                newX = Math.max(0, Math.min(newX, window.innerWidth - frameContainer.offsetWidth));
-                newY = Math.max(0, Math.min(newY, window.innerHeight - frameContainer.offsetHeight));
-                
+                // Permitir movimiento libre por toda la pantalla
                 frameContainer.style.left = newX + 'px';
                 frameContainer.style.top = newY + 'px';
             } else if (isResizing) {
@@ -1073,7 +1072,7 @@
         }
 
         function handleResize(e) {
-            if (isRecording || frame.classList.contains('analyzing')) return; // Prevenir redimensionamiento si está grabando o analizando
+            if (isRecording || frame.classList.contains('analyzing')) return;
 
             const dx = e.clientX - initialX;
             const dy = e.clientY - initialY;
@@ -1081,11 +1080,8 @@
             const newWidth = Math.max(350, initialWidth + dx);
             const newHeight = Math.max(250, initialHeight + dy);
             
-            const maxWidth = window.innerWidth - frameContainer.offsetLeft;
-            const maxHeight = window.innerHeight - frameContainer.offsetTop;
-            
-            frameContainer.style.width = Math.min(newWidth, maxWidth) + 'px';
-            frameContainer.style.height = Math.min(newHeight, maxHeight) + 'px';
+            frameContainer.style.width = newWidth + 'px';
+            frameContainer.style.height = newHeight + 'px';
         }
 
         frame.addEventListener('mousedown', dragStart);
