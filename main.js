@@ -25,33 +25,18 @@ function createTray() {
 }
 
 function createWindow() {
-  // Obtener el tamaño de la pantalla principal
-  const primaryDisplay = screen.getPrimaryDisplay();
-  const { width, height } = primaryDisplay.workAreaSize;
-
   mainWindow = new BrowserWindow({
-    width: width,
-    height: height,
-    x: 0,
-    y: 0,
+    width: 800,
+    height: 600,
     frame: false,
     transparent: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
-    },
-    skipTaskbar: false,
-    hasShadow: false,
-    // Estas opciones son clave para permitir la interacción con ventanas debajo
-    focusable: true,
-    clickThrough: true
+    }
   });
 
-  // Hacer que la ventana ignore los clics en áreas transparentes
-  mainWindow.setIgnoreMouseEvents(true, { forward: true });
-
   mainWindow.loadFile('index.html');
-  mainWindow.maximize();
   mainWindow.setAlwaysOnTop(true, 'screen-saver');
 
   // Crear el tray icon
@@ -116,77 +101,79 @@ app.on('activate', () => {
   }
 });
 
-// Manejar la solicitud para obtener la posición de la ventana
+// Obtener las coordenadas de la ventana
 ipcMain.handle('get-window-bounds', () => {
-    const bounds = mainWindow.getBounds();
-    return bounds;
+  return mainWindow.getBounds();
 });
 
-// Manejar la solicitud de captura de pantalla
-ipcMain.handle('capture-screen', async (event, bounds) => {
-    try {
-        // Obtener todas las fuentes de captura de pantalla con mayor resolución
-        const sources = await desktopCapturer.getSources({
-            types: ['screen'],
-            thumbnailSize: {
-                width: screen.getPrimaryDisplay().size.width,
-                height: screen.getPrimaryDisplay().size.height
-            }
-        });
+// Nueva implementación de captura de pantalla
+ipcMain.handle('capture-screen', async (event, frameBounds) => {
+  try {
+    // Obtener la pantalla principal
+    const primaryDisplay = screen.getPrimaryDisplay();
+    const { scaleFactor } = primaryDisplay;
 
-        // Crear la carpeta CapturasAuto en el directorio del proyecto
-        const capturesDir = path.join(__dirname, 'CapturasAuto');
-        
-        try {
-            if (!fs.existsSync(capturesDir)) {
-                fs.mkdirSync(capturesDir, { recursive: true });
-            }
-        } catch (err) {
-            console.error('Error al crear el directorio:', err);
-            return { success: false, error: 'No se pudo crear el directorio CapturasAuto' };
-        }
+    // Configurar la captura con resolución máxima
+    const sources = await desktopCapturer.getSources({
+      types: ['screen'],
+      thumbnailSize: {
+        width: primaryDisplay.size.width * scaleFactor,
+        height: primaryDisplay.size.height * scaleFactor
+      }
+    });
 
-        // Generar nombre de archivo único con timestamp
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        const fileName = `captura_auto_${timestamp}.png`;
-        const filePath = path.join(capturesDir, fileName);
-
-        // Obtener la imagen y guardarla
-        const source = sources[0]; // Pantalla principal
-        if (source.thumbnail) {
-            try {
-                // Ajustar las coordenadas según la escala de la pantalla
-                const scaleFactor = screen.getPrimaryDisplay().scaleFactor;
-                const cropBounds = {
-                    x: Math.round(bounds.x * scaleFactor),
-                    y: Math.round(bounds.y * scaleFactor),
-                    width: Math.round(bounds.width * scaleFactor),
-                    height: Math.round(bounds.height * scaleFactor)
-                };
-
-                // Capturar y recortar la imagen
-                const image = source.thumbnail.crop(cropBounds);
-                
-                // Guardar la imagen
-                fs.writeFileSync(filePath, image.toPNG());
-                console.log('Imagen guardada exitosamente en:', filePath);
-                
-                return { 
-                    success: true, 
-                    path: filePath,
-                    message: 'Captura guardada en CapturasAuto'
-                };
-            } catch (err) {
-                console.error('Error al procesar y guardar la imagen:', err);
-                return { 
-                    success: false, 
-                    error: 'Error al guardar la imagen: ' + err.message 
-                };
-            }
-        }
-        return { success: false, error: 'No se pudo obtener la captura de pantalla' };
-    } catch (error) {
-        console.error('Error en capture-screen:', error);
-        return { success: false, error: error.message };
+    if (!sources || sources.length === 0) {
+      throw new Error('No se pudo acceder a la pantalla');
     }
+
+    // Preparar directorio de capturas
+    const capturesDir = path.join(__dirname, 'CapturasAuto');
+    if (!fs.existsSync(capturesDir)) {
+      fs.mkdirSync(capturesDir, { recursive: true });
+    }
+
+    // Calcular coordenadas exactas considerando el factor de escala
+    const captureArea = {
+      x: Math.round(frameBounds.x * scaleFactor),
+      y: Math.round(frameBounds.y * scaleFactor),
+      width: Math.round(frameBounds.width * scaleFactor),
+      height: Math.round(frameBounds.height * scaleFactor)
+    };
+
+    // Verificar dimensiones válidas
+    if (captureArea.width <= 0 || captureArea.height <= 0) {
+      throw new Error('Dimensiones de captura inválidas');
+    }
+
+    // Realizar la captura
+    const source = sources[0];
+    const image = source.thumbnail.crop(captureArea);
+
+    // Generar nombre de archivo con timestamp y dimensiones
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const dimensions = `${frameBounds.width}x${frameBounds.height}`;
+    const fileName = `captura_${timestamp}_${dimensions}.png`;
+    const filePath = path.join(capturesDir, fileName);
+
+    // Guardar la imagen
+    fs.writeFileSync(filePath, image.toPNG());
+
+    console.log('Captura realizada:', {
+      ruta: filePath,
+      dimensiones: dimensions,
+      area: captureArea
+    });
+
+    return {
+      success: true,
+      path: filePath
+    };
+
+  } catch (error) {
+    console.error('Error en la captura:', error);
+    return {
+      success: false,
+      error: error.message
+    };
+  }
 }); 

@@ -1471,83 +1471,101 @@
             });
         });
 
-        // Función para mostrar notificación
+        // Función para obtener las coordenadas exactas del contenido dentro del marco
+        function getFrameContentBounds() {
+            const frameRect = frame.getBoundingClientRect();
+            const frameStyle = window.getComputedStyle(frame);
+            const borderWidth = parseInt(frameStyle.borderWidth) || 3;
+
+            // Obtener coordenadas del contenido (excluyendo el borde)
+            return {
+                x: frameRect.x + borderWidth,
+                y: frameRect.y + borderWidth,
+                width: frameRect.width - (borderWidth * 2),
+                height: frameRect.height - (borderWidth * 2)
+            };
+        }
+
+        // Nueva función de captura de pantalla
+        async function captureScreen() {
+            try {
+                // Verificar que el marco esté en modo análisis
+                if (!frame.classList.contains('analyzing')) {
+                    return;
+                }
+
+                // Obtener coordenadas del contenido del marco
+                const contentBounds = getFrameContentBounds();
+
+                // Obtener la posición de la ventana
+                const windowBounds = await ipcRenderer.invoke('get-window-bounds');
+
+                // Calcular coordenadas absolutas en la pantalla
+                const screenBounds = {
+                    x: windowBounds.x + contentBounds.x,
+                    y: windowBounds.y + contentBounds.y,
+                    width: contentBounds.width,
+                    height: contentBounds.height
+                };
+
+                // Mostrar indicador de procesamiento
+                const notification = showNotification('Capturando...', false, 'processing');
+
+                // Realizar la captura
+                const result = await ipcRenderer.invoke('capture-screen', screenBounds);
+
+                // Ocultar indicador de procesamiento
+                if (notification) notification.remove();
+
+                if (result.success) {
+                    showNotification('Captura guardada correctamente');
+                } else {
+                    showNotification(result.error || 'Error al realizar la captura', true);
+                }
+            } catch (error) {
+                console.error('Error en captura:', error);
+                showNotification('Error al realizar la captura', true);
+            }
+        }
+
+        // Función mejorada para notificaciones
         function showNotification(message, isError = false, type = 'default') {
             const notification = document.createElement('div');
-            notification.className = 'notification';
-            
-            if (isError) {
-                notification.classList.add('error');
-            } else if (type === 'processing') {
-                notification.classList.add('processing');
-            }
-            
+            notification.className = `notification ${isError ? 'error' : ''} ${type}`;
             notification.textContent = message;
             document.body.appendChild(notification);
-            
-            setTimeout(() => {
+
+            requestAnimationFrame(() => {
                 notification.classList.add('show');
-            }, 100);
-            
+            });
+
             if (type !== 'processing') {
                 setTimeout(() => {
-                    notification.remove();
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
                 }, 3000);
             }
-            
+
             return notification;
         }
 
-        // Función para capturar la pantalla
-        async function captureScreen() {
-            try {
-                // Obtener las coordenadas del marco relativas a la ventana
-                const bounds = frame.getBoundingClientRect();
-                
-                // Obtener la posición de la ventana en la pantalla
-                const windowBounds = await ipcRenderer.invoke('get-window-bounds');
-                
-                // Calcular las coordenadas absolutas en la pantalla
-                const screenBounds = {
-                    x: Math.round(windowBounds.x + bounds.x),
-                    y: Math.round(windowBounds.y + bounds.y),
-                    width: Math.round(bounds.width),
-                    height: Math.round(bounds.height)
-                };
-
-                // Mostrar notificación de procesamiento
-                showNotification('Procesando captura...', false, 'processing');
-
-                const result = await ipcRenderer.invoke('capture-screen', screenBounds);
-                
-                if (result.success) {
-                    showNotification('Captura guardada en CapturasAuto');
-                    // Ocultar la instrucción permanentemente después de una captura exitosa
-                    const instruction = document.querySelector('.analysis-instruction');
-                    if (instruction) {
-                        instruction.style.display = 'none';
-                    }
-                } else {
-                    showNotification('Error al guardar la captura: ' + result.error, true);
-                    console.error('Error al capturar:', result.error);
-                }
-            } catch (error) {
-                showNotification('Error al realizar la captura', true);
-                console.error('Error al capturar la pantalla:', error);
-            }
-        }
-
-        // Manejar el clic en el botón de ojo
+        // Evento del botón de análisis
         analysisButton.addEventListener('click', async function() {
+            // Verificar si el marco está siendo manipulado
+            if (isDragging || isResizing) {
+                showNotification('Espera a que el marco esté quieto', true);
+                return;
+            }
+
+            // Activar modo análisis
             const instruction = document.querySelector('.analysis-instruction');
-            instruction.classList.add('hidden');
+            if (instruction) instruction.classList.add('hidden');
+            
             this.classList.add('spinning', 'moved-up');
             frame.classList.add('analyzing');
-            
-            // Esperar un momento para que la UI se actualice antes de capturar
-            setTimeout(async () => {
-                await captureScreen();
-            }, 500);
+
+            // Realizar la captura después de que el marco cambie a azul
+            setTimeout(captureScreen, 100);
         });
 
         // Agregar estilos para las notificaciones
