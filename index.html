@@ -1025,8 +1025,6 @@
             padding: 10px;
             padding-right: 20px;
             -webkit-app-region: no-drag;
-            overflow-y: auto;
-            overflow-x: hidden;
             max-height: calc(100% - 60px);
             position: relative;
             z-index: 1;
@@ -1434,6 +1432,272 @@
             color: #ff6666;
             text-decoration: underline;
         }
+
+        /* Estilos para el modal del nombre del personaje */
+        .character-name-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            display: none;
+            min-width: 300px;
+            text-align: center;
+        }
+
+        .character-name-modal h3 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .character-name-modal input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .character-name-modal .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .character-name-modal button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .character-name-modal .save-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .character-name-modal .cancel-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Estilos para la ventana del botón rojo */
+        .red-button-window {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .red-button-container {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 5px;
+            padding: 20px;
+            box-sizing: border-box;
+            max-height: calc(100% - 60px);
+        }
+
+        .red-button-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .transcription-container {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .transcription-container.active {
+            display: block;
+        }
+
+        .big-red-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ff4444, #cc3333);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(255, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .big-red-button.recording {
+            animation: pulseRecording 2s infinite;
+            background: linear-gradient(145deg, #28a745, #218838);
+        }
+
+        @keyframes pulseRecording {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Estilo para el overlay del modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: none;
+        }
+
+        .modal-overlay.show {
+            display: block;
+        }
+
+        /* Estilos comunes para los contenedores con scroll */
+        .scrollable-container {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 68, 68, 0.5) rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Estilos para la barra de desplazamiento en Chrome/Safari */
+        .scrollable-container::-webkit-scrollbar {
+            width: 8px;
+            background: transparent;
+        }
+
+        .scrollable-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+
+        .scrollable-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 68, 68, 0.5);
+            border-radius: 4px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .scrollable-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 68, 68, 0.7);
+            border: 2px solid transparent;
+            background-clip: padding-box;
+        }
+
+        .character-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+            padding-right: 20px;
+            -webkit-app-region: no-drag;
+            max-height: calc(100% - 60px);
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .red-button-container {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.95);
+            border-radius: 5px;
+            padding: 20px;
+            box-sizing: border-box;
+            max-height: calc(100% - 60px);
+        }
+
+        .red-button-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .transcription-container {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .transcription-container.active {
+            display: block;
+        }
+
+        .big-red-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ff4444, #cc3333);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(255, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .big-red-button.recording {
+            animation: pulseRecording 2s infinite;
+            background: linear-gradient(145deg, #28a745, #218838);
+        }
+
+        @keyframes pulseRecording {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>       
@@ -1487,7 +1751,7 @@
                     </div>
                     <div class="character-customization interactive-zone">
                         <h3>Personalizar IA</h3>
-                        <div class="character-form interactive-zone">
+                        <div class="character-form scrollable-container interactive-zone">
                             <div class="input-group">
                                 <label for="char-name">Nombre</label>
                                 <input type="text" id="char-name" class="interactive-zone" placeholder="Ingresa el nombre">
@@ -1555,6 +1819,17 @@
                             
                             <button class="educate-button interactive-zone" id="educate-button">Educar</button>
                         </div>
+                        <!-- Contenedor del botón rojo -->
+                        <div class="red-button-container scrollable-container interactive-zone">
+                            <div class="red-button-wrapper">
+                                <button class="big-red-button interactive-zone">
+                                    <i class="fas fa-microphone-slash"></i>
+                                </button>
+                                <div class="transcription-container">
+                                    <!-- El contenido de la transcripción se agregará aquí dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="learning-list">
                         <h3>Aprendizaje Adquirido</h3>
@@ -1596,6 +1871,19 @@
         <div class="buttons">
             <button class="save-btn interactive-zone">Guardar</button>
             <button class="cancel-btn interactive-zone">Borrar</button>
+        </div>
+    </div>
+
+    <!-- Modal overlay -->
+    <div class="modal-overlay"></div>
+
+    <!-- Modal para el nombre del personaje -->
+    <div class="character-name-modal">
+        <h3>Nombre del personaje</h3>
+        <input type="text" id="character-name-input" placeholder="Ingresa el nombre del personaje" class="interactive-zone">
+        <div class="buttons">
+            <button class="save-btn interactive-zone" id="save-character-btn">Guardar</button>
+            <button class="cancel-btn interactive-zone" id="back-character-btn">Volver</button>
         </div>
     </div>
 
@@ -2069,26 +2357,124 @@
             const name = document.getElementById('char-name').value.trim();
             const age = document.getElementById('char-age').value.trim();
             const address = document.getElementById('char-address').value.trim();
+            
+            // Obtener la configuración de voz
+            const voiceConfig = {
+                speed: document.getElementById('voice-speed').value,
+                pitch: document.getElementById('voice-pitch').value,
+                voiceType: document.querySelector('input[name="voice-type"]:checked')?.value || 'woman',
+                emotion: document.getElementById('voice-emotion').value,
+                engine: document.querySelector('input[name="voice-engine"]:checked')?.value || 'microsoft'
+            };
 
             if (!name || !age || !address) {
                 showNotification('Por favor, completa todos los campos', true);
                 return;
             }
 
-            // Aquí puedes agregar la lógica para procesar los datos del personaje
-            showNotification('¡Personaje educado exitosamente!');
+            // Guardar la configuración
+            const characterConfig = {
+                personalInfo: {
+                    name,
+                    age,
+                    address
+                },
+                voiceConfig
+            };
+
+            // Guardar en localStorage para persistencia
+            localStorage.setItem('characterConfig', JSON.stringify(characterConfig));
+
+            // Mostrar notificación de éxito
+            showNotification('Configuración guardada exitosamente');
+
+            // Ocultar el formulario y mostrar el botón rojo
+            const characterForm = document.querySelector('.character-form');
+            const redButtonContainer = document.querySelector('.red-button-container');
+            const customizationTitle = document.querySelector('.character-customization h3');
             
-            // Limpiar los campos
-            document.getElementById('char-name').value = '';
-            document.getElementById('char-age').value = '';
-            document.getElementById('char-address').value = '';
+            characterForm.style.display = 'none';
+            redButtonContainer.style.display = 'flex';
+            customizationTitle.style.display = 'none'; // Ocultar el título
+        });
+
+        // Función para cargar la configuración guardada
+        function loadSavedConfig() {
+            const savedConfig = localStorage.getItem('characterConfig');
+            if (savedConfig) {
+                const config = JSON.parse(savedConfig);
+                
+                // Cargar información personal
+                document.getElementById('char-name').value = config.personalInfo.name;
+                document.getElementById('char-age').value = config.personalInfo.age;
+                document.getElementById('char-address').value = config.personalInfo.address;
+                
+                // Cargar configuración de voz
+                document.getElementById('voice-speed').value = config.voiceConfig.speed;
+                document.getElementById('voice-pitch').value = config.voiceConfig.pitch;
+                document.getElementById('voice-emotion').value = config.voiceConfig.emotion;
+                
+                // Seleccionar el tipo de voz
+                const voiceTypeRadio = document.querySelector(`input[name="voice-type"][value="${config.voiceConfig.voiceType}"]`);
+                if (voiceTypeRadio) voiceTypeRadio.checked = true;
+                
+                // Seleccionar el motor de voz
+                const engineRadio = document.querySelector(`input[name="voice-engine"][value="${config.voiceConfig.engine}"]`);
+                if (engineRadio) engineRadio.checked = true;
+            }
+        }
+
+        // Cargar la configuración al iniciar
+        window.addEventListener('load', loadSavedConfig);
+
+        // Agregar funcionalidad para volver al formulario
+        document.querySelector('.big-red-button').addEventListener('dblclick', () => {
+            const characterForm = document.querySelector('.character-form');
+            const redButtonContainer = document.querySelector('.red-button-container');
+            const customizationTitle = document.querySelector('.character-customization h3');
             
-            // Volver al chat después de un momento
-            setTimeout(() => {
-                document.querySelector('.character-customization').style.display = 'none';
-                chatContent.style.display = 'flex';
-                modeButtons.forEach(btn => btn.classList.remove('active'));
-            }, 2000);
+            characterForm.style.display = 'flex';
+            redButtonContainer.style.display = 'none';
+            customizationTitle.style.display = 'block'; // Mostrar el título
+        });
+
+        // Manejar el botón de guardar en el modal
+        document.getElementById('save-character-btn').addEventListener('click', () => {
+            const characterName = document.getElementById('character-name-input').value.trim();
+            
+            if (!characterName) {
+                showNotification('Por favor, ingresa un nombre para el personaje', true);
+                return;
+            }
+
+            // Ocultar el modal y mostrar la ventana del botón rojo
+            document.querySelector('.character-name-modal').style.display = 'none';
+            document.querySelector('.modal-overlay').classList.remove('show');
+            
+            // Mostrar la ventana del botón rojo
+            const redButtonWindow = document.querySelector('.red-button-window');
+            redButtonWindow.style.display = 'flex';
+        });
+
+        // Manejar el botón de volver
+        document.getElementById('back-character-btn').addEventListener('click', () => {
+            // Ocultar el modal y el overlay
+            document.querySelector('.character-name-modal').style.display = 'none';
+            document.querySelector('.modal-overlay').classList.remove('show');
+            
+            // Limpiar el input
+            document.getElementById('character-name-input').value = '';
+        });
+
+        // Cerrar el modal al hacer clic en el overlay
+        document.querySelector('.modal-overlay').addEventListener('click', () => {
+            document.querySelector('.character-name-modal').style.display = 'none';
+            document.querySelector('.modal-overlay').classList.remove('show');
+        });
+
+        // Prevenir que los clics dentro del modal cierren el modal
+        document.querySelector('.character-name-modal').addEventListener('click', (e) => {
+            e.stopPropagation();
         });
 
         // Función para obtener las coordenadas exactas del contenido dentro del marco
@@ -2436,7 +2822,7 @@
 
             } catch (error) {
                 console.error('Error:', error);
-                showNotification('Error al generar la voz: ' + error.message, true);
+                //showNotification('Error al generar la voz: ' + error.message, true);
                 testVoiceButton.classList.remove('speaking');
                 testVoiceButton.innerHTML = '<i class="fas fa-volume-up"></i> Prueba de voz';
             }
@@ -2611,6 +2997,104 @@
                     return availableVoices[0];
             }
         }
+
+        // Voice Recognition Implementation
+        let recognition = null;
+        let isRecognizing = false;
+        const bigRedButton = document.querySelector('.big-red-button');
+        const transcriptionContainer = document.querySelector('.transcription-container');
+
+        // Initialize speech recognition
+        function initializeSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                showNotification('Tu navegador no soporta el reconocimiento de voz', true);
+                return false;
+            }
+
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'es-ES'; // Set Spanish language
+
+            // Handle recognition results
+            recognition.onresult = (event) => {
+                let finalTranscript = '';
+                let interimTranscript = '';
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript + ' ';
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+
+                // Update transcription container
+                transcriptionContainer.innerHTML = `
+                    <div style="color: #fff">${finalTranscript}</div>
+                    <div style="color: rgba(255, 255, 255, 0.6)">${interimTranscript}</div>
+                `;
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Error en reconocimiento de voz:', event.error);
+                stopRecognition();
+                showNotification('Error en el reconocimiento de voz: ' + event.error, true);
+            };
+
+            recognition.onend = () => {
+                if (isRecognizing) {
+                    recognition.start(); // Restart if it was still supposed to be running
+                }
+            };
+
+            return true;
+        }
+
+        // Start voice recognition
+        function startRecognition() {
+            if (!recognition && !initializeSpeechRecognition()) {
+                return;
+            }
+
+            try {
+                recognition.start();
+                isRecognizing = true;
+                bigRedButton.style.background = 'linear-gradient(145deg, #28a745, #218838)';
+                transcriptionContainer.classList.add('active');
+                bigRedButton.innerHTML = '<i class="fas fa-microphone"></i>';
+            } catch (error) {
+                console.error('Error al iniciar reconocimiento:', error);
+                showNotification('Error al iniciar el reconocimiento de voz', true);
+            }
+        }
+
+        // Stop voice recognition
+        function stopRecognition() {
+            if (recognition) {
+                recognition.stop();
+                isRecognizing = false;
+                bigRedButton.style.background = 'linear-gradient(145deg, #ff4444, #cc3333)';
+                bigRedButton.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+            }
+        }
+
+        // Toggle voice recognition
+        function toggleRecognition() {
+            if (isRecognizing) {
+                stopRecognition();
+            } else {
+                startRecognition();
+            }
+        }
+
+        // Add click event listener to the big red button
+        bigRedButton.addEventListener('click', toggleRecognition);
+
+        // Initialize microphone icon
+        bigRedButton.innerHTML = '<i class="fas fa-microphone-slash"></i>';
     </script>
 </body>
 </html> 
