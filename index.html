@@ -128,8 +128,8 @@
             height: calc(100% + 6px);
             display: flex;
             flex-direction: column;
-            width: 220px;
-            min-width: 220px;
+            width: 300px;
+            min-width: 300px;
             background: rgba(0, 0, 0, 0.8);
             border-radius: 5px;
             margin-left: 3px;
@@ -153,7 +153,7 @@
             display: flex;
             gap: 3px;
             flex-grow: 1;
-            min-width: 160px;
+            min-width: 220px;
             flex-shrink: 0;
         }
 
@@ -522,8 +522,8 @@
             }
 
             #message-container {
-                width: 220px;
-                min-width: 220px;
+                width: 300px;
+                min-width: 300px;
             }
             
             .mode-button {
@@ -975,6 +975,465 @@
         .ai-button:hover::before {
             opacity: 0.3;
         }
+
+        #talk-button {
+            background: linear-gradient(145deg, rgba(255, 68, 68, 0.1), rgba(255, 68, 68, 0.2));
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+
+        #talk-button:hover {
+            background: linear-gradient(145deg, rgba(255, 68, 68, 0.2), rgba(255, 68, 68, 0.3));
+        }
+
+        #talk-button.active {
+            background: linear-gradient(145deg, rgba(255, 68, 68, 0.4), rgba(255, 68, 68, 0.5));
+            box-shadow: inset 0 0 0 1px rgba(255, 68, 68, 0.4);
+        }
+
+        /* Estilos para la sección de personalización del personaje */
+        .character-customization {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            padding: 15px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 5px;
+            -webkit-app-region: no-drag;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .character-customization h3 {
+            color: white;
+            text-align: center;
+            margin: 0 0 20px 0;
+            font-size: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            -webkit-app-region: no-drag;
+        }
+
+        .character-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+            padding-right: 20px;
+            -webkit-app-region: no-drag;
+            overflow-y: auto;
+            overflow-x: hidden;
+            max-height: calc(100% - 60px);
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            position: relative;
+            z-index: 2;
+            -webkit-app-region: no-drag;
+            width: 100%;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 5px;
+            color: white;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            -webkit-app-region: no-drag;
+            position: relative;
+            z-index: 2;
+            height: 35px;
+            box-sizing: border-box;
+        }
+
+        .scrollbar-area {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background: transparent;
+            -webkit-app-region: no-drag;
+            z-index: 3;
+        }
+
+        /* Estilos para la barra de scroll */
+        .character-form::-webkit-scrollbar {
+            width: 8px;
+            background: transparent;
+        }
+
+        .character-form::-webkit-scrollbar-thumb {
+            background: rgba(255, 68, 68, 0.3);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .character-form::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 68, 68, 0.5);
+        }
+
+        .character-form::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+
+        /* Para Firefox */
+        .character-form {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 68, 68, 0.3) rgba(255, 255, 255, 0.1);
+        }
+
+        .input-group label {
+            color: white;
+            font-size: 0.9em;
+            font-weight: 500;
+            -webkit-app-region: no-drag;
+        }
+
+        .input-group input:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
+        }
+
+        .educate-button {
+            margin-top: 25px;
+            padding: 10px;
+            background: linear-gradient(145deg, #ff4444, #cc3333);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            -webkit-app-region: no-drag;
+            width: 100%;
+            height: 40px;
+        }
+
+        .educate-button:hover {
+            background: linear-gradient(145deg, #ff5555, #dd3333);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .educate-button:active {
+            transform: translateY(1px);
+        }
+
+        /* Estilos para los títulos de sección */
+        .section-title {
+            color: white;
+            text-align: center;
+            font-size: 1em;
+            font-weight: 500;
+            margin: 20px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Ajustar el espacio entre secciones */
+        .form-section {
+            margin-bottom: 15px;
+        }
+
+        /* Estilos para las opciones de voz */
+        .voice-options {
+            margin-bottom: 20px;
+        }
+
+        .voice-options .input-group {
+            margin-bottom: 15px;
+        }
+
+        .voice-options input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .voice-options input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #ff4444;
+            cursor: pointer;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .voice-options input[type="range"]::-webkit-slider-thumb:hover {
+            background: #ff6666;
+            transform: scale(1.1);
+        }
+
+        .voice-options select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 5px;
+            color: white;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            -webkit-app-region: no-drag;
+            height: 35px;
+            cursor: pointer;
+        }
+
+        .voice-options select:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
+        }
+
+        .voice-options select option {
+            background: #2a2a2a;
+            color: white;
+            padding: 8px;
+        }
+
+        .voice-options select:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Estilos para las opciones de tipo de voz */
+        .voice-type-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            flex: 1 1 calc(50% - 5px);
+            min-width: 100px;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: rgba(255, 68, 68, 0.3);
+            border-color: rgba(255, 68, 68, 0.5);
+            box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
+        }
+
+        .radio-option label:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .radio-option input[type="radio"]:checked + label:hover {
+            background: rgba(255, 68, 68, 0.35);
+        }
+
+        /* Estilos para el botón de prueba de voz */
+        .test-voice-button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background: linear-gradient(145deg, #ff4444, #cc3333);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .test-voice-button:hover {
+            background: linear-gradient(145deg, #ff5555, #dd3333);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .test-voice-button:active {
+            transform: translateY(1px);
+        }
+
+        .test-voice-button i {
+            font-size: 1.1em;
+        }
+
+        .test-voice-button.speaking {
+            background: linear-gradient(145deg, #28a745, #218838);
+            pointer-events: none;
+        }
+
+        .voice-engine-selector {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .engine-option {
+            flex: 1;
+        }
+
+        .engine-option input[type="radio"] {
+            display: none;
+        }
+
+        .engine-option label {
+            display: block;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .engine-option input[type="radio"]:checked + label {
+            background: rgba(255, 68, 68, 0.3);
+            border-color: rgba(255, 68, 68, 0.5);
+            box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
+        }
+
+        .engine-option label:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .api-key-container {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .api-key-input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .api-key-input-group input[type="password"] {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .toggle-password {
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .get-key-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .get-key-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Estilos para el contenedor de API key */
+        .api-key-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .api-key-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .api-key-input-group input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            padding-right: 40px;
+            border-radius: 5px;
+            color: white;
+            font-size: 0.9em;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            padding: 0;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            color: white;
+        }
+
+        .get-key-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: #ff4444;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .get-key-link:hover {
+            color: #ff6666;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>       
@@ -997,6 +1456,9 @@
                         </button>
                         <button class="mode-button interactive-zone" data-tooltip="Con este modo la IA enviara todo lo que alcanse analizar, ideal para camaras">
                             Análisis
+                        </button>
+                        <button class="mode-button interactive-zone" id="talk-button" data-tooltip="Activa el reconocimiento de voz para interactuar con la IA mediante comandos hablados">
+                            Hablar
                         </button>
                     </div>
                     <div class="control-buttons-group">
@@ -1021,6 +1483,77 @@
                                 <button class="ai-button interactive-zone" id="claude-button">Claude</button>
                                 <button class="ai-button interactive-zone" id="chatgpt-button">Chat GPT</button>
                             </div>
+                        </div>
+                    </div>
+                    <div class="character-customization interactive-zone">
+                        <h3>Personalizar IA</h3>
+                        <div class="character-form interactive-zone">
+                            <div class="input-group">
+                                <label for="char-name">Nombre</label>
+                                <input type="text" id="char-name" class="interactive-zone" placeholder="Ingresa el nombre">
+                            </div>
+                            <div class="input-group">
+                                <label for="char-age">Edad</label>
+                                <input type="number" id="char-age" class="interactive-zone" placeholder="Ingresa la edad">
+                            </div>
+                            <div class="input-group">
+                                <label for="char-address">Dirección</label>
+                                <input type="text" id="char-address" class="interactive-zone" placeholder="Ingresa la dirección">
+                            </div>
+                            
+                            <div class="section-title">opciones de voz ai</div>
+                            <div class="voice-options">
+                             
+                                <div class="input-group">
+                                    <label>Tipo de voz</label>
+                                    <div class="voice-type-options">
+                                        <div class="radio-option">
+                                            <input type="radio" id="woman-voice" name="voice-type" value="woman" class="interactive-zone" checked>
+                                            <label for="woman-voice">Mujer</label>
+                                        </div>
+                                        <div class="radio-option">
+                                            <input type="radio" id="man-voice" name="voice-type" value="man" class="interactive-zone">
+                                            <label for="man-voice">Hombre</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Motor de voz</label>
+                                    <div class="voice-engine-selector">
+                                        <div class="engine-option">
+                                            <input type="radio" id="microsoft-voice" name="voice-engine" value="microsoft" class="interactive-zone" checked>
+                                            <label for="microsoft-voice">Microsoft Neural</label>
+                                        </div>
+                                        <div class="engine-option">
+                                            <input type="radio" id="google-voice" name="voice-engine" value="google" class="interactive-zone">
+                                            <label for="google-voice">Google Neural</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label for="voice-emotion">Emoción</label>
+                                    <select id="voice-emotion" class="interactive-zone">
+                                        <option value="neutral">Neutral</option>
+                                        <option value="friendly">Amigable</option>
+                                        <option value="professional">Profesional</option>
+                                        <option value="excited">Emocionado</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="voice-speed">Velocidad de voz</label>
+                                    <input type="range" id="voice-speed" class="interactive-zone" min="0.5" max="2" step="0.1" value="1">
+                                </div>
+                                <div class="input-group">
+                                    <label for="voice-pitch">Tono de voz</label>
+                                    <input type="range" id="voice-pitch" class="interactive-zone" min="0.5" max="2" step="0.1" value="1">
+                                </div>
+                                <button id="test-voice-button" class="test-voice-button interactive-zone">
+                                    <i class="fas fa-volume-up"></i>
+                                    Prueba de voz
+                                </button>
+                            </div>
+                            
+                            <button class="educate-button interactive-zone" id="educate-button">Educar</button>
                         </div>
                     </div>
                     <div class="learning-list">
@@ -1065,6 +1598,8 @@
             <button class="cancel-btn interactive-zone">Borrar</button>
         </div>
     </div>
+
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=U4K1Nqi3"></script>
 
     <script>
         const { ipcRenderer } = require('electron');
@@ -1265,12 +1800,20 @@
                 modeButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
 
+                // Ocultar todas las ventanas primero
+                hideAnalysisWindow();
+                hideLearningList();
+                chatContent.style.display = 'none';
+                playButtonContainer.style.display = 'none';
+                document.querySelector('.character-customization').style.display = 'none';
+                frame.classList.remove('analyzing');
+
                 if (button === captureButton) {
-                    chatContent.style.display = 'none';
                     playButtonContainer.style.display = 'flex';
+                } else if (button.id === 'talk-button') {
+                    document.querySelector('.character-customization').style.display = 'flex';
                 } else {
                     chatContent.style.display = 'flex';
-                    playButtonContainer.style.display = 'none';
                 }
             });
         });
@@ -1521,30 +2064,31 @@
             document.querySelector('.analysis-instruction').classList.remove('hidden');
         }
 
-        // Modificar el evento click de los botones de modo
-        modeButtons.forEach(button => {
-            button.addEventListener('click', () => {
+        // Manejo del botón Educar
+        document.getElementById('educate-button').addEventListener('click', () => {
+            const name = document.getElementById('char-name').value.trim();
+            const age = document.getElementById('char-age').value.trim();
+            const address = document.getElementById('char-address').value.trim();
+
+            if (!name || !age || !address) {
+                showNotification('Por favor, completa todos los campos', true);
+                return;
+            }
+
+            // Aquí puedes agregar la lógica para procesar los datos del personaje
+            showNotification('¡Personaje educado exitosamente!');
+            
+            // Limpiar los campos
+            document.getElementById('char-name').value = '';
+            document.getElementById('char-age').value = '';
+            document.getElementById('char-address').value = '';
+            
+            // Volver al chat después de un momento
+            setTimeout(() => {
+                document.querySelector('.character-customization').style.display = 'none';
+                chatContent.style.display = 'flex';
                 modeButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-
-                // Ocultar todas las ventanas primero
-                hideAnalysisWindow();
-                hideLearningList();
-                chatContent.style.display = 'none';
-                playButtonContainer.style.display = 'none';
-                frame.classList.remove('analyzing');
-
-                if (button === supportButton) {
-                    showLearningList();
-                    updateLearningList();
-                } else if (button === analysisModeButton) {
-                    showAnalysisWindow();
-                } else if (button.id === 'capture-button') {
-                    playButtonContainer.style.display = 'flex';
-                } else {
-                    chatContent.style.display = 'flex';
-                }
-            });
+            }, 2000);
         });
 
         // Función para obtener las coordenadas exactas del contenido dentro del marco
@@ -1700,6 +2244,373 @@
                 chatgptButton.classList.remove('active');
             }, 1000);
         });
+
+        // Manejo de eventos para el formulario de personalización
+        const characterCustomization = document.querySelector('.character-customization');
+        const characterForm = document.querySelector('.character-form');
+        const inputs = characterCustomization.querySelectorAll('input');
+        let isInputFocused = false;
+
+        // Función para mantener la interactividad
+        function enableInteraction() {
+            setIgnoreMouseEvents(false);
+        }
+
+        // Mejorar el manejo del scroll
+        characterForm.addEventListener('wheel', (e) => {
+            enableInteraction();
+            // Permitir el scroll natural
+            e.stopPropagation();
+        }, { passive: true });
+
+        // Manejar el scroll con la barra de desplazamiento
+        characterForm.addEventListener('mousedown', (e) => {
+            if (e.target === characterForm || e.target.closest('.scrollbar-area')) {
+                enableInteraction();
+            }
+        });
+
+        // Manejar los inputs
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                isInputFocused = true;
+                enableInteraction();
+            });
+
+            input.addEventListener('blur', () => {
+                isInputFocused = false;
+            });
+
+            input.addEventListener('mouseenter', enableInteraction);
+        });
+
+        // Manejar el contenedor principal
+        characterCustomization.addEventListener('mouseenter', enableInteraction);
+        characterCustomization.addEventListener('mousemove', enableInteraction);
+
+        // Crear área específica para la barra de desplazamiento
+        const scrollArea = document.createElement('div');
+        scrollArea.className = 'scrollbar-area interactive-zone';
+        characterForm.parentElement.appendChild(scrollArea);
+
+        scrollArea.addEventListener('mouseenter', enableInteraction);
+        scrollArea.addEventListener('mousemove', enableInteraction);
+
+        // Manejar el botón de educar
+        const educateButton = document.getElementById('educate-button');
+        educateButton.addEventListener('mouseenter', enableInteraction);
+
+        // Observador de mutaciones para mantener la interactividad durante cambios dinámicos
+        const observer = new MutationObserver(() => {
+            if (isInputFocused) {
+                enableInteraction();
+            }
+        });
+
+        observer.observe(characterForm, {
+            childList: true,
+            subtree: true,
+            attributes: true
+        });
+
+        // Funcionalidad de prueba de voz
+        const testVoiceButton = document.getElementById('test-voice-button');
+
+        // Función para obtener los parámetros de voz
+        function getVoiceParameters() {
+            const name = document.getElementById('char-name').value.trim();
+            const age = document.getElementById('char-age').value.trim();
+            const address = document.getElementById('char-address').value.trim();
+            const speed = parseFloat(document.getElementById('voice-speed').value);
+            const pitch = parseFloat(document.getElementById('voice-pitch').value);
+            const voiceType = document.querySelector('input[name="voice-type"]:checked')?.value || 'woman';
+            const emotion = document.getElementById('voice-emotion').value;
+            const engine = document.querySelector('input[name="voice-engine"]:checked')?.value || 'microsoft';
+
+            return { name, age, address, speed, pitch, voiceType, emotion, engine };
+        }
+
+        // Función para ajustar los parámetros de voz según el género y emoción
+        function getVoiceConfig(params) {
+            let config = {
+                pitch: params.pitch,
+                rate: params.speed,
+                volume: 1,
+                onstart: function() {
+                    testVoiceButton.classList.add('speaking');
+                    testVoiceButton.innerHTML = '<i class="fas fa-volume-up"></i> Hablando...';
+                },
+                onend: function() {
+                    testVoiceButton.classList.remove('speaking');
+                    testVoiceButton.innerHTML = '<i class="fas fa-volume-up"></i> Prueba de voz';
+                }
+            };
+
+            // Ajustes base según el género
+            if (params.voiceType === 'man') {
+                config.pitch *= 0.8; // Voz más grave para hombres
+                config.rate *= 0.95; // Ligeramente más lenta
+                config.voice = 'Spanish Latin American Male';
+            } else {
+                config.pitch *= 1.2; // Voz más aguda para mujeres
+                config.rate *= 1.05; // Ligeramente más rápida
+                config.voice = 'Spanish Latin American Female';
+            }
+
+            // Ajustes adicionales según la emoción
+            switch(params.emotion) {
+                case 'friendly':
+                    config.pitch *= 1.1;
+                    config.rate *= 0.95;
+                    config.volume = 1.2;
+                    break;
+                case 'professional':
+                    config.pitch *= 0.95;
+                    config.rate *= 0.9;
+                    config.volume = 1.0;
+                    break;
+                case 'excited':
+                    config.pitch *= 1.2;
+                    config.rate *= 1.1;
+                    config.volume = 1.3;
+                    break;
+                case 'neutral':
+                default:
+                    config.volume = 1.0;
+                    break;
+            }
+
+            // Asegurar que los valores estén dentro de límites razonables
+            config.pitch = Math.max(0.5, Math.min(2, config.pitch));
+            config.rate = Math.max(0.5, Math.min(1.5, config.rate));
+            config.volume = Math.max(0, Math.min(1.5, config.volume));
+
+            return config;
+        }
+
+        // Inicializar ResponsiveVoice cuando la página cargue
+        window.addEventListener('load', function() {
+            if (responsiveVoice.voiceSupport()) {
+                // Habilitar el hook de clic para dispositivos móviles
+                responsiveVoice.enableWindowClickHook();
+                
+                // Establecer la voz predeterminada
+                responsiveVoice.setDefaultVoice("Spanish Latin American Female");
+                
+                // Configurar reemplazos de texto para mejorar la pronunciación
+                responsiveVoice.setTextReplacements([
+                    {
+                        searchvalue: /(\d+)/g,
+                        newvalue: " $1 " // Agregar espacios alrededor de los números para mejor pronunciación
+                    }
+                ]);
+            } else {
+                showNotification('Tu navegador no soporta la síntesis de voz', true);
+                testVoiceButton.disabled = true;
+            }
+        });
+
+        testVoiceButton.addEventListener('click', async () => {
+            const params = getVoiceParameters();
+            
+            // Validar que todos los campos estén completos
+            if (!params.name || !params.age || !params.address) {
+                showNotification('Por favor, completa todos los campos antes de hacer la prueba de voz', true);
+                return;
+            }
+
+            try {
+                // Cancelar cualquier voz en reproducción
+                responsiveVoice.cancel();
+
+                // Obtener la configuración de voz según los parámetros
+                const voiceConfig = getVoiceConfig(params);
+
+                // Preparar el texto con pausas naturales usando SSML
+                const text = `Mi nombre es... ${params.name}... tengo ${params.age} años de edad... y soy de... ${params.address}`;
+
+                // Reproducir el texto con ResponsiveVoice
+                if (!responsiveVoice.speak(text, voiceConfig.voice, voiceConfig)) {
+                    throw new Error('No se pudo iniciar la síntesis de voz');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al generar la voz: ' + error.message, true);
+                testVoiceButton.classList.remove('speaking');
+                testVoiceButton.innerHTML = '<i class="fas fa-volume-up"></i> Prueba de voz';
+            }
+        });
+
+        // Agregar botones para pausar/reanudar la voz
+        document.addEventListener('keydown', function(e) {
+            if (e.code === 'Space' && responsiveVoice.isPlaying()) {
+                e.preventDefault();
+                responsiveVoice.pause();
+            }
+        });
+
+        document.addEventListener('keyup', function(e) {
+            if (e.code === 'Space' && responsiveVoice.isPlaying()) {
+                e.preventDefault();
+                responsiveVoice.resume();
+            }
+        });
+
+        // Manejar la visibilidad del campo de API key
+        voiceEngineRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                apiKeyContainer.style.display = e.target.value === 'realistic' ? 'block' : 'none';
+            });
+        });
+
+        // Manejar la visibilidad de la contraseña
+        togglePasswordButton.addEventListener('click', () => {
+            const type = apiKeyInput.type === 'password' ? 'text' : 'password';
+            apiKeyInput.type = type;
+            togglePasswordButton.innerHTML = `<i class="fas fa-eye${type === 'password' ? '' : '-slash'}"></i>`;
+        });
+
+        async function generateRealisticVoice(text, apiKey) {
+            const voiceId = "21m00Tcm4TlvDq8ikWAM"; // ID de voz en español de ElevenLabs
+            const url = `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'audio/mpeg',
+                        'Content-Type': 'application/json',
+                        'xi-api-key': apiKey
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        model_id: "eleven_multilingual_v2",
+                        voice_settings: {
+                            stability: 0.5,
+                            similarity_boost: 0.75,
+                            style: 0.5,
+                            use_speaker_boost: true
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error al generar la voz realista');
+                }
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                const audio = new Audio(audioUrl);
+                
+                audio.onended = () => {
+                    URL.revokeObjectURL(audioUrl);
+                    testVoiceButton.classList.remove('speaking');
+                    testVoiceButton.innerHTML = '<i class="fas fa-volume-up"></i> Prueba de voz';
+                };
+
+                return audio;
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;
+            }
+        }
+
+        testVoiceButton.addEventListener('click', async () => {
+            const params = getVoiceParameters();
+            const useRealisticVoice = document.querySelector('input[name="voice-engine"]:checked').value === 'realistic';
+            
+            // Validar que todos los campos estén completos
+            if (!params.name || !params.age || !params.address) {
+                showNotification('Por favor, completa todos los campos antes de hacer la prueba de voz', true);
+                return;
+            }
+
+            // Validar API key si se usa voz realista
+            if (useRealisticVoice) {
+                const apiKey = apiKeyInput.value.trim();
+                if (!apiKey) {
+                    showNotification('Por favor, ingresa tu API key de ElevenLabs', true);
+                    return;
+                }
+            }
+
+            // Cambiar el estado del botón
+            testVoiceButton.classList.add('speaking');
+            testVoiceButton.innerHTML = '<i class="fas fa-volume-up"></i> Hablando...';
+
+            try {
+                const text = `Mi nombre es ${params.name}; tengo ${params.age} años de edad; y soy de ${params.address}`;
+
+                if (useRealisticVoice) {
+                    // Usar ElevenLabs para voz realista
+                    const audio = await generateRealisticVoice(text, apiKeyInput.value.trim());
+                    audio.play();
+                } else {
+                    // Usar la síntesis de voz básica
+                    speechSynthesis.cancel();
+                    let voices = speechSynthesis.getVoices();
+                    if (voices.length === 0) {
+                        await new Promise(resolve => {
+                            speechSynthesis.onvoiceschanged = () => {
+                                voices = speechSynthesis.getVoices();
+                                resolve();
+                            };
+                        });
+                    }
+
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.voice = getVoiceByType(voices, params.voiceType);
+                    utterance.rate = parseFloat(params.speed);
+                    utterance.pitch = parseFloat(params.pitch);
+                    utterance.lang = 'es-ES';
+
+                    utterance.onend = () => {
+                        testVoiceButton.classList.remove('speaking');
+                        testVoiceButton.innerHTML = '<i class="fas fa-volume-up"></i> Prueba de voz';
+                    };
+
+                    speechSynthesis.speak(utterance);
+                }
+            } catch (error) {
+                showNotification('Error al generar la voz: ' + error.message, true);
+                testVoiceButton.classList.remove('speaking');
+                testVoiceButton.innerHTML = '<i class="fas fa-volume-up"></i> Prueba de voz';
+            }
+        });
+
+        function getVoiceParameters() {
+            const name = document.getElementById('char-name').value.trim();
+            const age = document.getElementById('char-age').value.trim();
+            const address = document.getElementById('char-address').value.trim();
+            const speed = document.getElementById('voice-speed').value;
+            const pitch = document.getElementById('voice-pitch').value;
+            const voiceType = document.querySelector('input[name="voice-type"]:checked')?.value || 'woman';
+
+            return { name, age, address, speed, pitch, voiceType };
+        }
+
+        function getVoiceByType(voices, voiceType) {
+            // Buscar voces en español
+            const spanishVoices = voices.filter(voice => voice.lang.startsWith('es'));
+            
+            // Si no hay voces en español, usar cualquier voz disponible
+            const availableVoices = spanishVoices.length > 0 ? spanishVoices : voices;
+            
+            // Seleccionar voz según el tipo
+            switch(voiceType) {
+                case 'woman':
+                    return availableVoices.find(voice => !voice.name.toLowerCase().includes('male')) || availableVoices[0];
+                case 'man':
+                    return availableVoices.find(voice => voice.name.toLowerCase().includes('male')) || availableVoices[0];
+                case 'grandpa':
+                    return availableVoices.find(voice => voice.name.toLowerCase().includes('male')) || availableVoices[0];
+                case 'grandma':
+                    return availableVoices.find(voice => !voice.name.toLowerCase().includes('male')) || availableVoices[0];
+                default:
+                    return availableVoices[0];
+            }
+        }
     </script>
 </body>
 </html> 
