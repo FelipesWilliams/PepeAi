@@ -902,6 +902,79 @@
         .notification {
             z-index: 10000;
         }
+
+        /* Estilos para la sección de NUTRIR IA */
+        .nurture-ai-section {
+            padding: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 10px;
+        }
+
+        .nurture-ai-title {
+            color: white;
+            text-align: center;
+            font-size: 0.9em;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .ai-buttons-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .ai-button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-button:hover {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .ai-button:active {
+            transform: translateY(1px);
+        }
+
+        .ai-button.active {
+            background: linear-gradient(145deg, #28a745, #218838);
+            border-color: #28a745;
+        }
+
+        .ai-button::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff4444, #28a745);
+            z-index: -1;
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .ai-button:hover::before {
+            opacity: 0.3;
+        }
     </style>
 </head>
 <body>       
@@ -941,6 +1014,13 @@
                                 <span class="loader"></span>
                                 <i class="fas fa-paper-plane"></i>
                             </button>
+                        </div>
+                        <div class="nurture-ai-section">
+                            <div class="nurture-ai-title">NUTRIR IA</div>
+                            <div class="ai-buttons-container">
+                                <button class="ai-button interactive-zone" id="claude-button">Claude</button>
+                                <button class="ai-button interactive-zone" id="chatgpt-button">Chat GPT</button>
+                            </div>
                         </div>
                     </div>
                     <div class="learning-list">
@@ -1595,6 +1675,31 @@
             }
         `;
         document.head.appendChild(style);
+
+        // Manejo de los botones de NUTRIR IA
+        const claudeButton = document.getElementById('claude-button');
+        const chatgptButton = document.getElementById('chatgpt-button');
+
+        function openInEdge(url) {
+            // Comando para abrir en Edge
+            ipcRenderer.send('open-in-edge', url);
+        }
+
+        claudeButton.addEventListener('click', () => {
+            claudeButton.classList.add('active');
+            openInEdge('https://claude.ai/new');
+            setTimeout(() => {
+                claudeButton.classList.remove('active');
+            }, 1000);
+        });
+
+        chatgptButton.addEventListener('click', () => {
+            chatgptButton.classList.add('active');
+            openInEdge('https://chat.openai.com');
+            setTimeout(() => {
+                chatgptButton.classList.remove('active');
+            }, 1000);
+        });
     </script>
 </body>
 </html> 

@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Tray, screen, ipcMain, desktopCapturer } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { exec } = require('child_process');
 
 let mainWindow;
 let tray = null;
@@ -182,4 +183,16 @@ ipcMain.handle('capture-screen', async (event, frameBounds) => {
       error: error.message
     };
   }
+});
+
+// Manejar la apertura de URLs en Microsoft Edge
+ipcMain.on('open-in-edge', (event, url) => {
+    // Comando para abrir Edge con la URL específica
+    const command = `start microsoft-edge:${url}`;
+    
+    exec(command, (error) => {
+        if (error) {
+            console.error('Error al abrir Edge:', error);
+        }
+    });
 }); 
